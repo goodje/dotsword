@@ -1,0 +1,4 @@
+[submodule "dotcoal"]
+	path = dotcoal
+	url = git@github.com:goodje/dotcoal.git
+	branch = dawn
