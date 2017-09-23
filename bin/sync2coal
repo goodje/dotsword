@@ -1,0 +1,25 @@
+#! /bin/bash
+
+[[ -z "$SWORD_PATH" ]] && SWORD_PATH=~/.sword
+
+ENCRYPT=${SWORD_PATH}/bin/encrypt_file
+DECRYPT=${SWORD_PATH}/bin/decrypt_file
+
+CLASSIFIED_CFG=${SWORD_PATH}/config/classified.conf
+CLAS_SAVING_PATH=${SWORD_PATH}/dotcoal/crypto
+
+grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
+| while read line; do
+    if [[ ! -f ${SWORD_PATH}/${line} ]] ; then
+        echo "warning: ${SWORD_PATH}/${line} not exists, ignored."
+	continue
+    fi
+
+    if [[ ! -d `dirname ${CLAS_SAVING_PATH}/${line}` ]]; then
+	    echo "`dirname ${CLAS_SAVING_PATH}/${line}` not exists, create it."
+	    mkdir -p `dirname ${CLAS_SAVING_PATH}/${line}`
+    fi
+    $ENCRYPT ${SWORD_PATH}/${line} ${CLAS_SAVING_PATH}/${line}.enc
+done
+
+echo "If files are encrypted successfully, rember push to GIT!!!!!!!!! Rember!!!!"

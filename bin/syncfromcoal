@@ -1,0 +1,24 @@
+#! /bin/bash
+
+[[ -z "$SWORD_PATH" ]] && SWORD_PATH=~/.sword
+
+ENCRYPT=${SWORD_PATH}/bin/encrypt_file
+DECRYPT=${SWORD_PATH}/bin/decrypt_file
+
+CLASSIFIED_CFG=${SWORD_PATH}/config/classified.conf
+CLAS_SAVING_PATH=${SWORD_PATH}/dotcoal/crypto
+
+grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
+| while read line; do
+    if [[ ! -f ${CLAS_SAVING_PATH}/${line}.enc ]] ; then
+        echo "warning: ${CLAS_SAVING_PATH}/${line}.enc not exists, ignored."
+	continue
+    fi
+
+    if [[ ! -d `dirname ${SWORD_PATH}/${line}` ]]; then
+	    echo "`dirname ${SWORD_PATH}/${line}` not exists, create it."
+	    mkdir -p `dirname ${SWORD_PATH}/${line}`
+    fi
+    $DECRYPT ${CLAS_SAVING_PATH}/${line}.enc ${SWORD_PATH}/${line} 
+done
+

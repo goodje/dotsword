@@ -1,0 +1,8 @@
+#! /bin/bash
+
+if [ $# -lt 2 ]; then
+    echo "encrypt plain_file out_file"
+    exit -1
+fi
+
+openssl aes-256-ecb -a -salt -in $1 -out $2
