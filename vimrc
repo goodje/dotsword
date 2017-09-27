@@ -44,7 +44,7 @@ nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
 set history=1024
 
 " set colorcolumn=120
-call matchadd("ColorColumn", '\%81v', 120)
+call matchadd("ColorColumn", '\%121v', 120)
 highlight ColorColumn ctermbg=8 guibg=lightgrey
 
 set fileformats="unix,dos,mac"
