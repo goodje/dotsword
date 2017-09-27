@@ -1,16 +1,11 @@
 #SWORD_PATH=${SWORD_PATH}
-SWORD_PATH=~/.sword
-SWORD_PATH=`realpath $SWORD_PATH`
+SWORD_PATH=${HOME}/.sword
 SWORD_CUSTOM_PATH=${SWORD_PATH}/custom
-
-export CLICOLOR=1 #terminal color
 
 # -- alias
 alias ll="ls -alh"
 alias l="ll"
 
-export LC_ALL=en_US.UTF-8
-#export SSLKEYLOGFILE=~/tls/sslkeylog.log
 
 # -- PATH
 export PATH=~/.sword/bin:$PATH
@@ -27,3 +22,8 @@ source_include () {
 # custom rc
 source_include $SWORD_CUSTOM_PATH/classified.shell.rc
 source_include $SWORD_CUSTOM_PATH/shell.rc
+
+# -- others
+export LC_ALL=en_US.UTF-8
+export CLICOLOR=1 #terminal color
+
