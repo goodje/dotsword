@@ -1,8 +1,37 @@
 #! /bin/bash
 
-if [ $# -lt 2 ]; then
-    echo "encrypt plain_file out_file"
+key=
+in=
+out=
+
+enc_args=
+
+for param in $@
+do
+    if [[ $param =~ ^-k$ ]]; then
+        option=key # remember for next param
+        continue
+    fi
+
+    # check previous param, if is a param name, this param should be param value
+    case $option in
+    key)
+        enc_args="${enc_args} -k ${param}"
+        option=
+        ;;
+    *) if [[ -z $in ]]; then
+            in=$param
+        elif [[ -z $out ]]; then
+            out=$param
+            enc_args="${enc_args} -out ${param}"
+        fi
+    esac
+done
+
+
+if [[ -z $in ]]; then
+    echo "Usage: encrypt_file [-k key] raw_file [out_file]"
     exit -1
 fi
 
-openssl aes-256-ecb -a -salt -in $1 -out $2
+openssl aes-256-ecb -a -salt -in $in $enc_args
