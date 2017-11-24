@@ -12,14 +12,16 @@ set binary
 set ttyfast
 
 """" appearance
-syntax on
+set t_Co=256
+if &t_Co > 1
+    syntax on
+endif
 set number
 set showcmd             " show command in bottom bar
 " set cursorline          " highlight current line
 set wildmenu            " visual autocomplete for command menu
 set lazyredraw          " redraw only when we need to.
 set ruler
-set t_Co=256
 set guioptions=egmrti
 
 """" tab, indent
@@ -63,3 +65,10 @@ endif
 
 """" reference
 " A Good Vimrc https://dougblack.io/words/a-good-vimrc.html
+" https://neovim.io/doc/user/usr_06.html
+
+"""" neovim
+
+if has('nvim')
+
+endif

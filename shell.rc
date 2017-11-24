@@ -8,6 +8,9 @@ alias l="ll"
 
 
 # -- PATH
+if [[ -d ~/.local/bin ]]; then
+    export PATH=~/.local/bin:$PATH
+fi
 export PATH=~/.sword/bin:$PATH
 
 # -- zsh
@@ -19,11 +22,12 @@ source_include () {
     [[ -f $1 ]] && source $1
 }
 
-# custom rc
-source_include $SWORD_CUSTOM_PATH/classified.shell.rc
-source_include $SWORD_CUSTOM_PATH/shell.rc
-
 # -- others
 export LC_ALL=en_US.UTF-8
 export CLICOLOR=1 #terminal color
+
+# custom rc
+source_include $SWORD_CUSTOM_PATH/classified.shell.rc
+source_include $SWORD_CUSTOM_PATH/shell.rc
+source ~/.local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh
 
