@@ -6,8 +6,9 @@ out=
 
 enc_args=
 
-for param in $@
+for (( i=1; i<=$#; i++ ))
 do
+    param=${!i}
     if [[ $param =~ ^-k$ ]]; then
         option=key # remember for next param
         continue
@@ -35,3 +36,9 @@ if [[ -z $in ]]; then
 fi
 
 openssl aes-256-ecb -a -salt -in $in $enc_args
+
+if [[ $? != 0 ]]; then
+    echo # new line
+    echo "encrypting file \"${in}\" failed"
+    exit $?
+fi

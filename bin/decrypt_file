@@ -35,3 +35,9 @@ if [[ -z $in ]]; then
 fi
 
 openssl aes-256-ecb -d -a -in ${in} $enc_args
+
+if [[ $? != 0 ]]; then
+    echo # new line
+    echo "decrypting file \"${in}\" failed"
+    exit $?
+fi

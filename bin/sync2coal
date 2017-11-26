@@ -7,19 +7,82 @@ DECRYPT=${SWORD_PATH}/bin/decrypt_file
 
 CLASSIFIED_CFG=${SWORD_PATH}/config/classified.conf
 CLAS_SAVING_PATH=${SWORD_PATH}/dotcoal/crypto
+KEY_FILE=${SWORD_PATH}/.key
+TEMP_PATH=${SWORD_PATH}/temp
+
+if [[ $1 == "-f" ]]; then
+    force=true
+fi
+
+if [[ -f $KEY_FILE ]]; then
+    key=`cat ${KEY_FILE}`
+fi
+
+if [[ -z $key ]]; then
+    read -s -p "Enter cryptokey: " key
+    if [[ -z $key ]]; then
+        echo "cryptokey can't be empty."
+        exit -1
+    fi
+fi
 
 grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
 | while read line; do
-    if [[ ! -f ${SWORD_PATH}/${line} ]] ; then
-        echo "warning: ${SWORD_PATH}/${line} not exists, ignored."
+    raw_file=${SWORD_PATH}/${line} 
+    encrypted_file=${CLAS_SAVING_PATH}/${line}.enc
+    # each file need to be encrypted
+    if [[ ! -f $raw_file ]] ; then
+        echo "warning: $raw_file not exists, ignored."
 	continue
     fi
 
-    if [[ ! -d `dirname ${CLAS_SAVING_PATH}/${line}` ]]; then
-	    echo "`dirname ${CLAS_SAVING_PATH}/${line}` not exists, create it."
-	    mkdir -p `dirname ${CLAS_SAVING_PATH}/${line}`
+    # create destination dirname
+    if [[ ! -d `dirname $encrypted_file ` ]]; then
+	    echo "`dirname $encrypted_file`} not exists, create it."
+	    mkdir -p `dirname $encrypted_file`
+        if [[ $? != 0 ]]; then
+            exit -1
+        fi
     fi
-    $ENCRYPT ${SWORD_PATH}/${line} ${CLAS_SAVING_PATH}/${line}.enc
+
+    # if destination exists
+    if [[ -f $encrypted_file ]]; then
+        temp_decrypted_file=${TEMP_PATH}/${line}
+
+        # create temporary directory
+        if [[ ! -d `dirname $temp_decrypted_file` ]]; then
+            mkdir -p `dirname $temp_decrypted_file`
+            if [[ $? != 0 ]]; then
+                exit -1
+            fi
+        fi
+
+        diff_result=`$DECRYPT $encrypted_file -k $key | diff - ${raw_file}`
+
+        if [[ -z $diff_result ]]; then
+            echo "'$raw_file' no changes, skipped."
+            continue
+        fi
+        
+        echo "'$raw_file' to '$encrypted_file' changes:"
+        echo "$diff_result"
+        if [[ $force ]]; then
+            write=true
+        else
+            echo "give param -f force sync."
+        fi
+
+        # diff $temp_decrypted_file $raw_file
+    else
+        write=true
+    fi
+    
+    if [[ $force ]]; then
+        # encrypt
+        $ENCRYPT $raw_file $encrypted_file -k $key
+        echo "wrote."
+    fi
+
 done
 
 echo "If files are encrypted successfully, rember push to GIT!!!!!!!!! Rember!!!!"
