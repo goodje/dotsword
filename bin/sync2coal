@@ -8,7 +8,7 @@ DECRYPT=${SWORD_PATH}/bin/decrypt_file
 CLASSIFIED_CFG=${SWORD_PATH}/config/classified.conf
 CLAS_SAVING_PATH=${SWORD_PATH}/dotcoal/crypto
 KEY_FILE=${SWORD_PATH}/.key
-TEMP_PATH=${SWORD_PATH}/temp
+#TEMP_PATH=${SWORD_PATH}/temp
 
 if [[ $1 == "-f" ]]; then
     force=true
@@ -47,15 +47,15 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
 
     # if destination exists
     if [[ -f $encrypted_file ]]; then
-        temp_decrypted_file=${TEMP_PATH}/${line}
+        #temp_decrypted_file=${TEMP_PATH}/${line}
 
         # create temporary directory
-        if [[ ! -d `dirname $temp_decrypted_file` ]]; then
-            mkdir -p `dirname $temp_decrypted_file`
-            if [[ $? != 0 ]]; then
-                exit -1
-            fi
-        fi
+        #if [[ ! -d `dirname $temp_decrypted_file` ]]; then
+        #    mkdir -p `dirname $temp_decrypted_file`
+        #    if [[ $? != 0 ]]; then
+        #        exit -1
+        #    fi
+        #fi
 
         diff_result=`$DECRYPT $encrypted_file -k $key | diff ${raw_file} -`
 
