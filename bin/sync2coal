@@ -57,27 +57,27 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
             fi
         fi
 
-        diff_result=`$DECRYPT $encrypted_file -k $key | diff - ${raw_file}`
+        diff_result=`$DECRYPT $encrypted_file -k $key | diff ${raw_file} -`
 
         if [[ -z $diff_result ]]; then
             echo "'$raw_file' no changes, skipped."
             continue
         fi
         
-        echo "'$raw_file' to '$encrypted_file' changes:"
+        echo "'$raw_file' -> '$encrypted_file' changes:"
         echo "$diff_result"
         if [[ $force ]]; then
             write=true
         else
             echo "give param -f force sync."
+            continue
         fi
 
-        # diff $temp_decrypted_file $raw_file
     else
         write=true
     fi
     
-    if [[ $force ]]; then
+    if [[ $write && $force ]]; then
         # encrypt
         $ENCRYPT $raw_file $encrypted_file -k $key
         echo "wrote."
