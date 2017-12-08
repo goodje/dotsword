@@ -46,7 +46,7 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
     fi
 
     # if destination exists
-    if [[ -f $encrypted_file ]]; then
+    if [[ -f $raw_file ]]; then
         # temp_decrypted_file=${TEMP_PATH}/${line}
 
         # create temporary directory
