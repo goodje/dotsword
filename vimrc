@@ -23,6 +23,11 @@ set wildmenu            " visual autocomplete for command menu
 set lazyredraw          " redraw only when we need to.
 set ruler
 set guioptions=egmrti
+" set colorcolumn=120
+call matchadd("ColorColumn", '\%121v', 120)
+highlight ColorColumn ctermbg=8 guibg=lightgrey
+highlight LineNr ctermfg=grey
+
 
 """" tab, indent
 set nowrap
@@ -44,10 +49,6 @@ nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
 """" misc
 " set hidden
 set history=1024
-
-" set colorcolumn=120
-call matchadd("ColorColumn", '\%121v', 120)
-highlight ColorColumn ctermbg=8 guibg=lightgrey
 
 set fileformats="unix,dos,mac"
 

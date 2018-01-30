@@ -1,11 +1,9 @@
-#SWORD_PATH=${SWORD_PATH}
 SWORD_PATH=${HOME}/.sword
-SWORD_CUSTOM_PATH=${SWORD_PATH}/custom
 
+source ${SWORD_PATH}/pre.sh
 # -- alias
 alias ll="ls -alh"
 alias l="ll"
-
 
 # -- PATH
 if [[ -d ~/.local/bin ]]; then
@@ -17,11 +15,6 @@ export PATH=~/.sword/bin:$PATH
 ZSH_CUSTOM=$SWORD_PATH/zsh
 # ZSH_THEME=tractor 
 
-# -- function
-source_include () {
-    [[ -f $1 ]] && source $1
-}
-
 # -- others
 export LC_ALL=en_US.UTF-8
 export CLICOLOR=1 #terminal color
@@ -30,4 +23,3 @@ export CLICOLOR=1 #terminal color
 source_include $SWORD_CUSTOM_PATH/classified.shell.rc
 source_include $SWORD_CUSTOM_PATH/shell.rc
 source ~/.local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh
-

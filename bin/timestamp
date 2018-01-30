@@ -4,5 +4,5 @@ import time
 import sys
 
 ts = time.time()
-print long(ts * 1000 * 1000)
+print long(ts)
 

@@ -1,0 +1,49 @@
+
+=dotsword
+mac
+	by brew
+	brew
+linux
+	apt/yum/requirement
+wget
+jq
+tmux
+ & https://github.com/gpakosz/.tmux.git
+ & $tmux.conf, (bottom of .tmux.conf.local -> if '[ -f ~/.sword/tmux.conf ]' 'source ~/.sword/tmux.conf')
+zsh
+ & oh-my-zsh
+ & $zsh_local
+ & $shell.rc (insert before source $ZSH/oh-my-zsh.sh -> dotsowrd\nsource ~/.sword/shell.rc)
+iterm2
+ theme: dracula
+python
+ & pip sudo easy_install pip
+ & virtualenv sudo pip install virtualenv
+$config
+$upgrade dependence
+$aws autocomplete
+ & $instance autocomplete
+$gitignore global
+ & create repository with different language & copyrigh
+aws-cli pip install awscli
+vim
+ & $vimrc echo "source ~/.sword/vimrc" >> ~/.vimrc
+ & Vundle https://github.com/VundleVim/Vundle.vim
+ & neovim sudo apt-get install neovim & sudo apt-get install python-neovim https://github.com/neovim/neovim/wiki/Installing-Neovim
+ | airline https://github.com/vim-airline/vim-airline#installation
+ & powerline pip&setuptools https://powerline.readthedocs.io/en/master/installation/linux.html
+   install: pip install --user powerline-status or pip install --user git+git://github.com/powerline/powerline
+ & gitstatus Successfully installed powerline-gitstatus-1.2.1 & $ custom
+git
+ & global config
+ & .gitignore
+the fuck Successfully installed backports.shutil-get-terminal-size-1.0.0 colorama-0.3.9 decorator-4.1.2 pathlib2-2.3.0 psutil-5.4.0 pyte-0.7.0 scandir-1.6 six-1.11.0 thefuck-3.24 wcwidth-0.1.7
+tree brew install tree
+mdp(Markdown preview) apt-get install mdp
+httpie brew install httpie, apt-get install httpie
+
+=dotconfig
+openssl
+$en/decrypt
+ & modify password & fresh
+$replace config
