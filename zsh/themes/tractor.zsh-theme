@@ -1,4 +1,5 @@
-local ret_status="%(?:%{$fg_bold[green]%}🚜 :%{$fg_bold[red]%}💥 )"
+local ret_status="%(?:%{$fg_bold[green]%}➫ :%{$fg_bold[red]%}➫ )"
+#local ret_status="%(?:%{$fg_bold[green]%}➜ :%{$fg_bold[red]%}➜ )" # default
 
 prompt_virtualenv() {
   local virtualenv_path="$VIRTUAL_ENV"

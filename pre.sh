@@ -11,5 +11,3 @@ SWORD_CUSTOM_PATH=${SWORD_PATH}/custom
 source_include () {
     [[ -f $1 ]] && source $1
 }
-
-echo 123
