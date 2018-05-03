@@ -3,6 +3,8 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
+filetype off                  " required for Vundle
+
 "" Encoding
 set encoding=utf-8
 set fileencoding=utf-8
@@ -27,7 +29,6 @@ set guioptions=egmrti
 call matchadd("ColorColumn", '\%121v', 120)
 highlight ColorColumn ctermbg=8 guibg=lightgrey
 highlight LineNr ctermfg=grey
-
 
 """" tab, indent
 set nowrap
@@ -73,3 +74,6 @@ endif
 if has('nvim')
 
 endif
+
+source ~/.sword/vim/vundle.vimrc
+source ~/.sword/vim/pymode.vimrc

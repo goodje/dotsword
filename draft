@@ -1,4 +1,3 @@
-
 =dotsword
 mac
 	by brew
@@ -27,13 +26,20 @@ $gitignore global
  & create repository with different language & copyrigh
 aws-cli pip install awscli
 vim
- & $vimrc echo "source ~/.sword/vimrc" >> ~/.vimrc
+ & $vimrc echo "source ~/.sword/vim/vimrc" >> ~/.vimrc
  & Vundle https://github.com/VundleVim/Vundle.vim
  & neovim sudo apt-get install neovim & sudo apt-get install python-neovim https://github.com/neovim/neovim/wiki/Installing-Neovim
  | airline https://github.com/vim-airline/vim-airline#installation
  & powerline pip&setuptools https://powerline.readthedocs.io/en/master/installation/linux.html
    install: pip install --user powerline-status or pip install --user git+git://github.com/powerline/powerline
  & gitstatus Successfully installed powerline-gitstatus-1.2.1 & $ custom
+ & YouCompleteMe https://github.com/Valloric/YouCompleteMe
+   sudo apt-get install build-essential cmake
+   sudo apt-get install python-dev python3-dev
+   ~/.vim/bundle git submodule git@github.com:Valloric/YouCompleteMe.git YouCompleteMe && cd YouCompleteMe
+   && git submodule update --init --recursive && ./install.py
+   && add Plugin 'file://~/.vim/bundle/YouCompleteMe' into vundle.vimrc
+ & Python-mode 
 git
  & global config
  & .gitignore
