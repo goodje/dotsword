@@ -27,3 +27,6 @@ let g:pymode_virtualenv = 1
 " Set path to virtualenv manually, (path can be absolute or relative to current working directory)
 " let g:pymode_virtualenv_path = '.venv'
 
+let mapleader=","
+nnoremap <C-c>g :RopeGotoDefinition<cr>
+let g:pymode_rope_goto_definition_cmd = 'new'

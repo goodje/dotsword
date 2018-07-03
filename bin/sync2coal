@@ -5,7 +5,7 @@
 ENCRYPT=${SWORD_PATH}/bin/encrypt_file
 DECRYPT=${SWORD_PATH}/bin/decrypt_file
 
-CLASSIFIED_CFG=${SWORD_PATH}/config/classified.conf
+CLASSIFIED_CFG=${SWORD_PATH}/config/classified_files.conf
 CLAS_SAVING_PATH=${SWORD_PATH}/dotcoal/crypto
 KEY_FILE=${SWORD_PATH}/.key
 #TEMP_PATH=${SWORD_PATH}/temp

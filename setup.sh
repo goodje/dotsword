@@ -2,6 +2,7 @@
 
 SWORD_PATH=${HOME}/.sword
 
+# ## todo check distribution version
 case `uname -s` in
     Darwin*)
         os=mac
@@ -15,7 +16,6 @@ case `uname -s` in
         exit -1
 esac
 
-# todo check distribution version
 
 # ## dependencies
 if [[ os = "linux" ]]; then
@@ -29,13 +29,17 @@ elif [[ os = "mac" ]]; then
     # brew install wget
 fi
 
+
 # options
 # todo need classified stuff?
+# sh -c '${SWORD_PATH}/bin/syncfromcoal'
+
 
 cd $SWORD_PATH
-# git fetch origin dawn # todo
-# git checkout -B dawn origin/dawn
+# ## todo git pull coal
 
+
+# ## dependencies
 # zsh https://github.com/robbyrussell/oh-my-zsh/wiki/Installing-ZSH
 if [[ os = "mac" ]]; then
     echo "brew install zsh zsh-completions"
@@ -46,21 +50,18 @@ elif [[ os = "linux" ]]; then
     sudo apt-get install -y zsh
 fi
 
-if [[ which zsh ]]; then
 # oh-my-zsh
-curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+if [[ which zsh ]]; then
+    curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
 
-grep "source ${SWORD_PATH}/shell.rc" ~/.zshrc
-if [[ $? != 0 ]]; then
-    sed -i".bak" "/source \$ZSH\/oh-my-zsh.sh/ i \\
+    grep "source ${SWORD_PATH}/shell.rc" ~/.zshrc
+    if [[ $? != 0 ]]; then
+        sed -i".bak" "/source \$ZSH\/oh-my-zsh.sh/ i \\
 source ${SWORD_PATH}/shell.rc\\
 \\
 " ~/.zshrc
+    fi
 fi
-fi
-
-# from coal
-# sh -c '${SWORD_PATH}/bin/syncfromcoal'
 
 # optional
 # tmux, & https://github.com/gpakosz/.tmux.git
