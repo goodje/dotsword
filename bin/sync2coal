@@ -1,6 +1,6 @@
 #! /bin/bash
 
-[[ -z "$SWORD_PATH" ]] && SWORD_PATH=~/.sword
+test -z "$SWORD_PATH" && SWORD_PATH=~/.sword
 
 . $SWORD_PATH/pre.sh
 
@@ -10,9 +10,10 @@ DECRYPT=${SWORD_PATH}/bin/decrypt_file
 CLASSIFIED_CFG=${SWORD_PATH}/config/classified_files.conf
 CLAS_SAVING_PATH=${SWORD_PATH}/dotcoal/crypto
 KEY_FILE=${SWORD_PATH}/.key
-MODE=to_coal  # to_coal, from_coal
+test -z "$MODE" && MODE=to_coal  # to_coal, from_coal
+force=false
 
-if [[ $1 == "-f" ]]; then
+if [[ $1 = "-f" ]]; then
     force=true
 fi
 
@@ -31,7 +32,7 @@ fi
 grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
 | while read line; do
 
-    if [[ $MODE == "from_coal" ]]; then
+    if [[ $MODE = "from_coal" ]]; then
         src_file=${CLAS_SAVING_PATH}/${line}.enc
         dest_file=${SWORD_PATH}/${line} 
         is_encrypt=false
@@ -62,13 +63,13 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
         permission_src=`ls -l $src_file | awk '{print $1}'`
         permission_dest=`ls -l $dest_file | awk '{print $1}'`
         
-        if [[ $MODE == "from_coal" ]]; then
+        if [[ $MODE = "from_coal" ]]; then
             diff_result=`$DECRYPT $src_file -k $key | diff ${dest_file} -`
         else
             diff_result=`$DECRYPT $dest_file -k $key | diff ${src_file} -`
         fi
 
-        if [[ -z $diff_result && $permission_src == $permission_dest ]]; then
+        if [[ -z $diff_result && $permission_src = $permission_dest ]]; then
             echo "$src_file: no changes, skipped."
             continue
         fi
@@ -81,7 +82,7 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
             echo "$permission_src -> $permission_dest"
         fi
 
-        if $force; then
+        if [[ "$force" = "true" ]]; then
             write=true
         else
             echo "give param -f force sync."
@@ -92,15 +93,15 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
         write=true
     fi
     
-    if $write; then
+    if [[ "$write" = "true" ]]; then
 
-        if $is_encrypt; then
+        if [[ "$is_encrypt" = "true" ]]; then
             $ENCRYPT $src_file $dest_file -k $key
         else
             $DECRYPT $src_file $dest_file -k $key
         fi
         
-        if [[ $os == "mac" ]]; then
+        if [[ $os = "mac" ]]; then
             chmod `stat -f %A $src_file` $dest_file
         else
             chmod --reference=$src_file $dest_file
