@@ -2,86 +2,9 @@
 
 [[ -z "$SWORD_PATH" ]] && SWORD_PATH=~/.sword
 
-ENCRYPT=${SWORD_PATH}/bin/encrypt_file
-DECRYPT=${SWORD_PATH}/bin/decrypt_file
-
-CLASSIFIED_CFG=${SWORD_PATH}/config/classified_files.conf
-CLAS_SAVING_PATH=${SWORD_PATH}/dotcoal/crypto
-KEY_FILE=${SWORD_PATH}/.key
-# TEMP_PATH=${SWORD_PATH}/temp
-
 if [[ $1 == "-f" ]]; then
-    force=true
+    force="-f"
 fi
 
-if [[ -f $KEY_FILE ]]; then
-    key=`cat ${KEY_FILE}`
-fi
-
-if [[ -z $key ]]; then
-    read -s -p "Enter cryptokey: " key
-    if [[ -z $key ]]; then
-        echo "cryptokey can't be empty."
-        exit -1
-    fi
-fi
-
-grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
-| while read line; do
-    raw_file=${SWORD_PATH}/${line} 
-    encrypted_file=${CLAS_SAVING_PATH}/${line}.enc
-    # each file need to be encrypted
-    if [[ ! -f $encrypted_file ]] ; then
-        echo "warning: $encrypted_file not exists, ignored."
-	    continue
-    fi
-
-    # create destination dirname
-    if [[ ! -d `dirname $raw_file ` ]]; then
-	    echo "`dirname $raw_file`} not exists, create it."
-	    mkdir -p `dirname $raw_file`
-        if [[ $? != 0 ]]; then
-            exit -1
-        fi
-    fi
-
-    # if destination exists
-    if [[ -f $raw_file ]]; then
-        # temp_decrypted_file=${TEMP_PATH}/${line}
-
-        # create temporary directory
-        #if [[ ! -d `dirname $temp_decrypted_file` ]]; then
-        #    mkdir -p `dirname $temp_decrypted_file`
-        #    if [[ $? != 0 ]]; then
-        #        exit -1
-        #    fi
-        #fi
-
-        diff_result=`$DECRYPT $encrypted_file -k $key | diff ${raw_file} -`
-
-        if [[ -z $diff_result ]]; then
-            echo "'$raw_file' no changes, skipped."
-            continue
-        fi
-        
-        echo "'$raw_file' <- '$encrypted_file' changes:"
-        echo "$diff_result"
-        if [[ $force ]]; then
-            write=true
-        else
-            echo "give param -f force sync."
-            continue
-        fi
-
-    else
-        write=true
-    fi
-    
-    if [[ $write && $force ]]; then
-        # decrypt
-        $DECRYPT $encrypted_file $raw_file -k $key
-        echo "wrote."
-    fi
-
-done
+MODE=from_coal $SWORD_PATH/bin/sync2coal $force
 
