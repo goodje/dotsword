@@ -43,6 +43,9 @@ Plugin 'nvie/vim-flake8'
 " color scheme
 Plugin 'jnurmine/Zenburn'
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'dracula/vim'
+
+" apperence
 Plugin 'scrooloose/nerdtree'
 Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'tpope/vim-fugitive'
@@ -91,7 +94,8 @@ if has('gui_running')
   set background=dark
   colorscheme solarized
 else
-  colorscheme zenburn
+  " colorscheme zenburn
+  colorscheme dracula
 endif
 
 " nerdtree
