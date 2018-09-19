@@ -5,7 +5,7 @@ set nocompatible
 
 filetype off                  " required for Vundle
 
-"" Encoding
+"" encoding
 set encoding=utf-8
 set fileencoding=utf-8
 set fileencodings=utf-8
@@ -39,8 +39,19 @@ set expandtab
 set smarttab                    " insert tabs on the start of a line according to shiftwidth, not tabstop
 set autoindent                  " always set autoindenting on
 
-set foldenable          " enable folding
-set foldlevelstart=10   " open most folds by default
+au BufNewFile,BufRead *.py
+    \ set tabstop=4
+    \ set softtabstop=4
+    \ set shiftwidth=4
+    \ set textwidth=79
+    \ set expandtab
+    \ set autoindent
+    \ set fileformat=unix
+
+au BufNewFile,BufRead *.js, *.html, *.css
+    \ set tabstop=2
+    \ set softtabstop=2
+    \ set shiftwidth=2
 
 """" search
 set showmatch
@@ -52,8 +63,16 @@ nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
 set history=1024
 
 set fileformats="unix,dos,mac"
+au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
 
 set mouse=
+
+" folding
+set foldenable          " enable folding
+set foldlevelstart=10   " open most folds by default
+
+set foldmethod=indent
+set foldlevel=99
 
 " change cursor from block to vertical line, allows cursor change in tmux mode
 if exists('$TMUX')
@@ -65,7 +84,7 @@ else
 endif
 
 
-"""" reference
+"""" references
 " A Good Vimrc https://dougblack.io/words/a-good-vimrc.html
 " https://neovim.io/doc/user/usr_06.html
 
@@ -77,3 +96,4 @@ endif
 
 source ~/.sword/vim/vundle.vimrc
 source ~/.sword/vim/pymode.vimrc
+
