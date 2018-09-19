@@ -5,6 +5,3 @@
 [submodule "vender/Vundle.vim"]
 	path = vender/Vundle.vim
 	url = https://github.com/VundleVim/Vundle.vim.git
-[submodule "vender/YouCompleteMe"]
-	path = vender/YouCompleteMe
-	url = git@github.com:Valloric/YouCompleteMe.git

@@ -31,14 +31,22 @@ Plugin 'VundleVim/Vundle.vim'
 
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
-let g:airline_theme='minimalist'
-" alternative themes: molokai, deus, monochrome
-" let g:airline#extensions#tabline#enabled = 1
-
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'mhinz/vim-signify'
-Plugin 'file://~/.vim/bundle/YouCompleteMe'
 Plugin 'python-mode/python-mode'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'tmhedberg/SimpylFold'
+" to match indentation more closely what is suggested in PEP 8
+Plugin 'vim-scripts/indentpython.vim'
+Plugin 'vim-syntastic/syntastic'
+Plugin 'nvie/vim-flake8'
+" color scheme
+Plugin 'jnurmine/Zenburn'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'scrooloose/nerdtree'
+Plugin 'jistr/vim-nerdtree-tabs'
+Plugin 'tpope/vim-fugitive'
+Plugin 'bitc/vim-bad-whitespace' " Highlights whitespace at the end of lines, only in modifiable buffers
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -56,6 +64,41 @@ filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
 
 
-"""" vimi-airline
+" Airline
+let g:airline_theme='minimalist'
+" alternative themes: molokai, deus, monochrome
+" let g:airline#extensions#tabline#enabled = 1
 set laststatus=2
+
+" YouCompleteMe
+let g:ycm_autoclose_preview_window_after_completion=1
+map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"python with virtualenv support
+py << EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+  project_base_dir = os.environ['VIRTUAL_ENV']
+  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+  execfile(activate_this, dict(__file__=activate_this))
+EOF
+
+" SimpliypFold
+let g:SimpylFold_docstring_preview = 1
+
+" colorscheme
+if has('gui_running')
+  set background=dark
+  colorscheme solarized
+else
+  colorscheme zenburn
+endif
+
+" nerdtree
+map <C-n> :NERDTreeToggle<CR>
+" open NERDTree automatically when vim starts up on opening a directory
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree
+
 
