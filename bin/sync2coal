@@ -17,16 +17,18 @@ if [[ $1 = "-f" ]]; then
     force=true
 fi
 
+# password
 if [[ -f $KEY_FILE ]]; then
-    key=`cat ${KEY_FILE}`
-fi
+    key_param="-kfile ${KEY_FILE}"
 
-if [[ -z $key ]]; then
+else
+
     read -s -p "Enter cryptokey: " key
     if [[ -z $key ]]; then
         echo "cryptokey can't be empty."
         exit -1
     fi
+    key_param="-k ${key}"
 fi
 
 grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
@@ -34,10 +36,10 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
 
     if [[ $MODE = "from_coal" ]]; then
         src_file=${CLAS_SAVING_PATH}/${line}.enc
-        dest_file=${SWORD_PATH}/${line} 
+        dest_file=${SWORD_PATH}/${line}
         is_encrypt=false
     else
-        src_file=${SWORD_PATH}/${line} 
+        src_file=${SWORD_PATH}/${line}
         dest_file=${CLAS_SAVING_PATH}/${line}.enc
         is_encrypt=true
     fi
@@ -62,18 +64,18 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
     if [[ -f $dest_file ]]; then
         permission_src=`ls -l $src_file | awk '{print $1}'`
         permission_dest=`ls -l $dest_file | awk '{print $1}'`
-        
+
         if [[ $MODE = "from_coal" ]]; then
-            diff_result=`$DECRYPT $src_file -k $key | diff ${dest_file} -`
+            diff_result=`$DECRYPT $src_file $key_param | diff ${dest_file} -`
         else
-            diff_result=`$DECRYPT $dest_file -k $key | diff ${src_file} -`
+            diff_result=`$DECRYPT $dest_file $key_param | diff ${src_file} -`
         fi
 
         if [[ -z $diff_result && $permission_src = $permission_dest ]]; then
             echo "$src_file: no changes, skipped."
             continue
         fi
-        
+
         echo "'$src_file' -> '$dest_file' changes:"
         if [[ -n $diff_result ]]; then
             echo "$diff_result"
@@ -92,15 +94,15 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
     else
         write=true
     fi
-    
+
     if [[ "$write" = "true" ]]; then
 
         if [[ "$is_encrypt" = "true" ]]; then
-            $ENCRYPT $src_file $dest_file -k $key
+            $ENCRYPT $src_file $dest_file $key_param
         else
-            $DECRYPT $src_file $dest_file -k $key
+            $DECRYPT $src_file $dest_file $key_param
         fi
-        
+
         if [[ $os = "mac" ]]; then
             chmod `stat -f %A $src_file` $dest_file
         else
