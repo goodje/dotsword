@@ -1,6 +1,7 @@
 #! /bin/bash
 
 key=
+kfile=
 in=
 out=
 
@@ -12,6 +13,9 @@ do
     if [[ $param =~ ^-k$ ]]; then
         option=key # remember for next param
         continue
+    elif [[ $param =~ ^-kfile$ ]]; then
+        option=kfile
+        continue
     fi
 
     # check previous param, if is a param name, this param should be param value
@@ -20,6 +24,12 @@ do
         enc_args="${enc_args} -k ${param}"
         option=
         ;;
+
+    kfile)
+        enc_args="${enc_args} -kfile ${param}"
+        option=
+        ;;
+
     *) if [[ -z $in ]]; then
             in=$param
         elif [[ -z $out ]]; then
@@ -31,7 +41,7 @@ done
 
 
 if [[ -z $in ]]; then
-    echo "Usage: encrypt_file [-k key] raw_file [out_file]"
+    echo "Usage: encrypt_file [-k key]|[-kfile key file path] raw_file [out_file]"
     exit -1
 fi
 
