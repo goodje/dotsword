@@ -34,7 +34,6 @@ do
             in=$param
         elif [[ -z $out ]]; then
             out=$param
-            enc_args="${enc_args} -out ${param}"
         fi
     esac
 done
@@ -45,10 +44,17 @@ if [[ -z $in ]]; then
     exit -1
 fi
 
-openssl aes-256-ecb -a -salt -in $in $enc_args
+output="$(openssl enc -aes-256-ecb -md sha256 -a $enc_args -in $in)"
 
 if [[ $? != 0 ]]; then
     echo # new line
     echo "encrypting file \"${in}\" failed"
     exit $?
 fi
+
+if [[ -z $output ]]; then
+    echo "$output"
+else
+    echo "$output" > $out
+fi
+

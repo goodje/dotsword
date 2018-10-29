@@ -1,0 +1,207 @@
+#/bin/sh
+
+# dependences:
+# mongodb-org-tools
+#   - mongodump
+#   - mongorestore
+# https://docs.mongodb.com/manual/tutorial/install-mongodb-on-ubuntu/
+
+# parse parameters
+for i in "$@"; do
+case $i in
+    -s=*|--ssh=*)
+    SRC_SSH="${i#*=}"
+    shift # past argument=value
+    ;;
+    --db=*)
+    DB="${i#*=}"
+    shift # past argument=value
+    ;;
+    -c=*|--collection=*)
+    COLLECTION="${i#*=}"
+    shift # past argument=value
+    ;;
+    -q=*|--query=*)
+    QUERY="${i#*=}"
+    shift
+    ;;
+    --backup)
+    BACKUP_ONLY=1
+    shift
+    ;;
+    --restore)
+    RESTORE_ONLY=1
+    shift
+    ;;
+    --backup_prefix)  # todo
+    BACKUP_PREFIX="${i#*=}"
+    shift
+    ;;
+    --tunnel_only)
+    TUNNEL_ONLY=1
+    shift
+    ;;
+    --drop_backup)
+    DROP_BACKUP=1
+    shift
+    ;;
+esac
+done
+
+help() {
+    echo "mongodb_sync [options] [src_host:src_port] [dest_host:dest_port]"
+    echo "options:"
+    echo "  --ssh|-s=ssh credential        user@ssh_host"
+    echo "  --db=arg                       dbname"
+    echo "  --query|-q=arg                 query"
+    echo "  --backup                       only backup"
+    echo "  --restore                      only restore"
+    echo "  --backup_prefix                backup directory, default: ~/backup"
+    echo "  --drop_backup                  drop backup"
+}
+
+SRC=$1
+DEST=$2
+
+BACKUP=1
+RESTORE=1
+SRC_TUNNEL=0
+DEST_TUNNEL=0  # todo
+
+if [ "$BACKUP_ONLY" = 1 ]; then
+    DEST_TUNNEL=0
+    RESTORE=0
+fi
+
+if [ -n "$SRC_SSH" ]; then
+    SRC_TUNNEL=1
+fi
+
+if [ "$TUNNEL_ONLY" = 1 ]; then
+    SRC_TUNNEL=1
+    DEST_TUNNEL=0
+    BACKUP=0
+    RESTORE=0
+fi
+
+if [ "$BACKUP_ONLY" = 1 ]; then
+    # todo
+    TODO
+fi
+
+if [ "$BACKUP" = 1 ] && [ -z "$SRC" ]; then
+    echo "src is invalid"
+    help
+    exit 1
+fi
+
+if [ "$RESTORE" = 1 ] && [ -z "$DEST" ]; then
+    echo "dest is invalid"
+    help
+    exit 1
+fi
+
+SRC_HOST=${SRC%:*}
+SRC_PORT=${SRC#*:}
+
+DEST_HOST=${DEST%:*}
+DEST_PORT=${DEST#*:}
+
+if [ -z "$BACKUP_PREFIX" ]; then
+    BACKUP_PREFIX=~/backup
+fi
+BACKUP_PATH=$BACKUP_PREFIX/dump_$(date +%Y%m%d_%H%M%S%Z)
+
+echo "source host: $SRC_HOST"
+echo "source port: $SRC_PORT"
+echo "dest host: $DEST_HOST"
+echo "dest port: $DEST_PORT"
+[ -z $DB ] || echo "database: $DB"
+[ -z $COLLECTION ] || echo "collection: $COLLECTION"
+[ -z $QUERY ] || echo "query: $QUERY"
+
+echo "backup file: $BACKUP_PATH"
+
+# #####
+
+if [ "$SRC_TUNNEL" = 1 ] && [ -n $SRC_SSH ]; then
+
+    SRC_TUNNEL_PORT=$(($(tr -cd 0-9 </dev/urandom|head -c 5)%40000+10000))
+    if [ $? != 0 ]]; then
+        echo "if you see \"arithmetic expression\", try again"
+        exit 1
+    fi
+    SRC_SSH_PORT=22
+    echo "over SSH $SRC_SSH:$SRC_SSH_PORT, local port: $SRC_TUNNEL_PORT"
+
+    echo "creating SSH tunnel..."
+    echo "ssh -fTNM -S db-sync-socket-$SRC_TUNNEL_PORT \
+-L $SRC_TUNNEL_PORT:127.0.0.1:$SRC_PORT $SRC_SSH -p $SRC_SSH_PORT"
+    ssh -fTNM -S db-sync-socket-$SRC_TUNNEL_PORT \
+        -L $SRC_TUNNEL_PORT:127.0.0.1:$SRC_PORT $SRC_SSH -p $SRC_SSH_PORT  # -q quite mode
+
+    SRC_TUNNEL_CREATED=1
+
+    SRC_HOST=127.0.0.1
+    SRC_PORT=$SRC_TUNNEL_PORT
+
+fi
+
+close_tunnel() {
+
+    if [ "$SRC_TUNNEL_CREATED" != 1 ]]; then
+        return
+    fi
+
+    echo "Disconnecting from SSH tunnel..."
+    ssh -S db-sync-socket-$SRC_TUNNEL_PORT -O exit $SRC_SSH # 2> /dev/null
+}
+
+[ -z $DB ] || DB_INSTRUCTION="-d $DB"
+[ -z $COLLECTION ] || COLLECTION_INSTRUCTION="-c $COLLECTION"
+[ -z $QUERY ] || QUERY_INSTRUCTION="-q $QUERY"
+
+if [ "$BACKUP" = 1 ]; then
+    echo "Dumping source DB to ${BACKUP_PATH}... "
+    if [ ! -d "$BACKUP_PATH" ]; then
+        mkdir -p $BACKUP_PATH
+        if [ $? != 0 ]; then
+            close_tunnel
+            exit 1
+        fi
+    fi
+
+    mongodump \
+        -h "$SRC_HOST":"$SRC_PORT" \
+        $DB_INSTRUCTION \
+        $COLLECTION_INSTRUCTION \
+        $QUERY_INSTRUCTION \
+        -o "$BACKUP_PATH" \
+        --gzip
+
+    if [ $? != 0 ]; then
+        close_tunnel
+        exit 1
+    fi
+    # todo write dump instruction in the dir
+    close_tunnel
+fi
+
+if [ "$RESTORE" = 1 ]; then
+    echo "this will overwrite the db($DB) in $DEST_HOST:$DEST_PORT"
+    echo "Overwriting destination DB with Dump... "
+    mongorestore \
+        -h "$DEST_HOST":"$DEST_PORT" \
+        --dir="$BACKUP_PATH" \
+        --gzip \
+        --drop
+
+    if [ $? != 0 ]]; then
+        exit 1
+    fi
+
+    if [ "$DROP_BACKUP" = 1 ]; then
+        echo "drop backup: $BACKUP_PATH"
+        rm -rf $BACKUP_PATH
+    fi
+fi

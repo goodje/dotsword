@@ -1,19 +1,32 @@
 =dotsword
-sudo apt-get update
-sudo apt-get install libncurses5-dev libncursesw5-dev mongodb-clients
-sudo apt install build-essential cmake python3-dev
 
-sudo ln -snf /usr/share/zoneinfo/Asia/Singapore /etc/localtime
+pull submodules
+git submodule init
+git submodule update
+
+== essential
+
 mac
 	by brew
-	brew
+	brew brew.coreutils
 linux
+    sudo ln -snf /usr/share/zoneinfo/Asia/Singapore /etc/localtime
 	apt/yum/requirement
+    sudo apt-get update
+    sudo apt-get install libncurses5-dev libncursesw5-dev mongodb-clients redis-tools liblzo2-dev
+    sudo apt install build-essential cmake python3-dev
+    sudo apt-get install libncurses5-dev libncursesw5-dev libpq-dev
+    apt-get install htop
 wget
 jq
+
 tmux
+ mac:
+    brew install tmux
  & https://github.com/gpakosz/.tmux.git
- & $tmux.conf, (bottom of .tmux.conf.local -> if '[ -f ~/.sword/tmux.conf ]' 'source ~/.sword/tmux.conf')
+ & $tmux.conf, (middile of .tmux.conf.local -> if '[ -f ~/.sword/tmux.conf ]' 'source ~/.sword/tmux.conf')
+ & tpm https://github.com/tmux-plugins/tpm
+
 zsh
  sudo apt-get install zsh
  & oh-my-zsh sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)" or sh -c "$(wget https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh -O -)"
@@ -21,16 +34,32 @@ zsh
  & $shell.rc (insert before source $ZSH/oh-my-zsh.sh -> dotsowrd\nsource ~/.sword/shell.rc)
 iterm2
  theme: dracula
+  https://draculatheme.com/iterm/
+   git clone https://github.com/dracula/iterm.git dracula/iterm
+
+tmuxinator
+    sudo apt instal ruby -y
+    gem install tmuxinator
+    export EDITOR='vim'
+
 python
  & pip sudo easy_install pip
  & virtualenv sudo pip install virtualenv
 $config
 $upgrade dependence
-$aws autocomplete
- & $instance autocomplete
 $gitignore global
- & create repository with different language & copyrigh
-aws-cli pip install awscli
+ & create repository with different language & copyright
+ctags
+ before install
+ sudo apt install \
+    gcc make \
+    pkg-config autoconf automake \
+    python3-docutils \
+    libseccomp-dev \
+    libjansson-dev \
+    libyaml-dev \
+    libxml2-dev
+ https://github.com/universal-ctags/ctags/blob/master/docs/autotools.rst
 vim
   sudo apt-get remove vim-tiny
   sudo apt-get install vim
@@ -46,7 +75,9 @@ vim
    sudo apt-get install build-essential cmake
    sudo apt-get install python-dev python3-dev
    ~/.vim/bundle/YouCompleteMe && cd YouCompleteMe && python3 install.py --clang-completer
- & Python-mode
+ & Python-mode this plugin is very slow, dont prefer to install
+ & Vim-plug https://github.com/junegunn/vim-plug
+    installation for vim and neovim is slightly different
 git
  & global config: state [include] path = {path}
  & .gitignore
@@ -60,3 +91,20 @@ openssl
 $en/decrypt
  & modify password & fresh
 $replace config
+
+== addtional
+$aws autocomplete
+ & $instance autocomplete
+aws-cli pip install awscli
+
+== code search
+ & the_silver_searcher sudo apt-get install -y silversearcher-ag or brew install the_silver_searcher
+
+== tig
+  & git browswer in CLI https://jonas.github.io/tig/INSTALL.html
+    mac brew install tig
+    linux compile manually
+
+== command line history
+  junegunn/fzf
+

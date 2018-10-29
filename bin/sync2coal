@@ -8,7 +8,7 @@ ENCRYPT=${SWORD_PATH}/bin/encrypt_file
 DECRYPT=${SWORD_PATH}/bin/decrypt_file
 
 CLASSIFIED_CFG=${SWORD_PATH}/config/classified_files.conf
-CLAS_SAVING_PATH=${SWORD_PATH}/dotcoal/crypto
+CLAS_SAVING_PATH=${SWORD_PATH}/vendors/dotcoal/crypto
 KEY_FILE=${SWORD_PATH}/.key
 test -z "$MODE" && MODE=to_coal  # to_coal, from_coal
 force=false
@@ -71,6 +71,10 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
             diff_result=`$DECRYPT $dest_file $key_param | diff ${src_file} -`
         fi
 
+        if [[ $? == 0 ]]; then
+            continue
+        fi
+
         if [[ -z $diff_result && $permission_src = $permission_dest ]]; then
             echo "$src_file: no changes, skipped."
             continue
@@ -101,6 +105,10 @@ grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
             $ENCRYPT $src_file $dest_file $key_param
         else
             $DECRYPT $src_file $dest_file $key_param
+        fi
+
+        if [[ $? == 0 ]]; then
+            continue
         fi
 
         if [[ $os = "mac" ]]; then
