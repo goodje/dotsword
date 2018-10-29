@@ -1,0 +1,28 @@
+[core]
+    editor = vim
+    excludesfile = ~/.sword/git/gitignore
+
+[user]
+    name = goodje
+    email = sample@email.com
+
+[diff]
+	tool = vimdiff
+
+[difftool]
+    prompt = false
+
+[mergetool]
+    prompt = false
+
+[pull]
+    rebase = true
+
+[alias]
+    l = log --oneline --graph --decorat
+    la = log --oneline --graph --decorat --all
+    master = checkout master
+    develop = checkout develop
+    dev = checkout dev
+    co = checkout
+    combine = "!combine() { git rebase -i HEAD~$1; }; combine"

@@ -1,0 +1,13 @@
+# don't share history between zsh client
+setopt noincappendhistory
+setopt nosharehistory
+unsetopt share_history
+
+# history
+HISTFILE=~/.zsh_history
+HISTSIZE=999999999
+SAVEHIST=$HISTSIZE
+
+# tmuxinator
+export EDITOR=vim
+source $SWORD_PATH/tmuxinator-completion

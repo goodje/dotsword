@@ -5,6 +5,8 @@ set nocompatible
 
 filetype off                  " required for Vundle
 
+let mapleader=","
+
 "" encoding
 set encoding=utf-8
 set fileencoding=utf-8
@@ -12,6 +14,7 @@ set fileencodings=utf-8
 set bomb
 set binary
 set ttyfast
+set fileformats="unix,dos,mac"
 
 """" appearance
 set t_Co=256
@@ -20,12 +23,13 @@ if &t_Co > 1
 endif
 set number
 set showcmd             " show command in bottom bar
-" set cursorline          " highlight current line
+set cursorline          " highlight current line
 set wildmenu            " visual autocomplete for command menu
 set lazyredraw          " redraw only when we need to.
 set ruler
 set guioptions=egmrti
 " set colorcolumn=120
+call matchadd("ColorColumn", '\%121v', 80)
 call matchadd("ColorColumn", '\%121v', 120)
 highlight ColorColumn ctermbg=8 guibg=lightgrey
 highlight LineNr ctermfg=grey
@@ -33,50 +37,6 @@ highlight CursorLine ctermbg=LightBlue
 
 """" split
 set splitright
-
-"""" tab, indent
-set nowrap
-set tabstop=4                   " a tab is four spaces
-set softtabstop=4               " when hitting <BS>, pretend like a tab is removed, even if spaces
-set shiftwidth=4                " number of spaces to use for autoindenting
-set expandtab
-set smarttab                    " insert tabs on the start of a line according to shiftwidth, not tabstop
-set autoindent                  " always set autoindenting on
-
-au BufNewFile,BufRead *.py
-    \ set tabstop=4 |
-    \ set softtabstop=4 |
-    \ set shiftwidth=4 |
-    \ set textwidth=120 |
-    \ set expandtab |
-    \ set autoindent |
-    \ set fileformat=unix
-
-au BufNewFile,BufRead *.js, *.html, *.css
-    \ set tabstop=2 |
-    \ set softtabstop=2 |
-    \ set shiftwidth=2
-
-"""" search
-set showmatch
-set hlsearch
-"nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
-
-"""" misc
-" set hidden
-set history=1024
-
-set fileformats="unix,dos,mac"
-au BufRead,BufNewFile *.py,*.pyw,*.c,*.h match BadWhitespace /\s\+$/
-
-set mouse=
-
-" folding
-set foldenable          " enable folding
-set foldlevelstart=10   " open most folds by default
-
-set foldmethod=indent
-set foldlevel=99
 
 """" remember the cursor last opened
 if has("autocmd")
@@ -92,6 +52,76 @@ else
     let &t_EI = "\<Esc>]50;CursorShape=0\x7"
 endif
 
+"""" tab, indent
+set nowrap
+set tabstop=4           " a tab is four spaces
+set softtabstop=4       " when hitting <BS>, pretend like a tab is removed, even if spaces
+set shiftwidth=4        " number of spaces to use for autoindenting
+set expandtab
+set smarttab            " insert tabs on the start of a line according to shiftwidth, not tabstop
+set autoindent          " always set autoindenting on
+
+au BufNewFile,BufRead *.py
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set textwidth=120 |
+    \ set expandtab |
+    \ set autoindent |
+    \ set fileformat=unix
+
+au BufNewFile,BufRead *.js,*.json,*.jsx,*.html,*.css,*.yml,*.yaml,*.sql
+    \ set tabstop=2 |
+    \ set softtabstop=2 |
+    \ set shiftwidth=2 |
+    \ set expandtab |
+    \ set autoindent |
+    \ set fileformat=unix
+
+" If one has a particular extension that one uses for binary files (such as exe,
+" bin, etc), you may find it helpful to automate the process with the following
+" bit of autocmds for your <.vimrc>.  Change that "*.bin" to whatever
+" comma-separated list of extension(s) you find yourself wanting to edit:
+
+" vim -b : edit binary using xxd-format!
+augroup Binary
+  au!
+  au BufReadPre  *.bin let &bin=1
+  au BufReadPost *.bin if &bin | %!xxd
+  au BufReadPost *.bin set ft=xxd | endif
+  au BufWritePre *.bin if &bin | %!xxd -r
+  au BufWritePre *.bin endif
+  au BufWritePost *.bin if &bin | %!xxd
+  au BufWritePost *.bin set nomod | endif
+augroup END
+
+" folding
+set foldenable          " enable folding
+set foldlevelstart=1   " open most folds by default
+set foldmethod=syntax
+" set foldmethod=indent
+set foldlevel=1
+
+
+"""" search
+set showmatch
+set hlsearch
+" clear highlight on pressing ESC
+nnoremap <esc> :noh<return><esc>
+"nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
+
+
+"""" misc
+" set hidden
+set history=10000
+
+" disable mouse
+set mouse=
+
+"""" clipboard
+" paste without clipboard overwritten
+xnoremap <leader>p "_dP
+
 
 """" references
 " A Good Vimrc https://dougblack.io/words/a-good-vimrc.html
@@ -103,6 +133,14 @@ if has('nvim')
 
 endif
 
-source ~/.sword/vim/vundle.vimrc
-source ~/.sword/vim/pymode.vimrc
+"""" features of specific file/type of files
+au BufRead,BufNewFile *.py
+    \ nnoremap <leader>b oimport pdb; pdb.set_trace()  # XXX BREAKPOINT<Esc>
+
+" source ~/.sword/vim/vundle.vimrc
+source ~/.sword/vim/plug.vimrc
+
+let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+set termguicolors
 

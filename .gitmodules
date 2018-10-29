@@ -1,10 +1,1 @@
-[submodule "dotcoal"]
-	path = dotcoal
-	url = git@github.com:goodje/dotcoal.git
-	branch = dawn
-[submodule "vender/Vundle.vim"]
-	path = vender/Vundle.vim
-	url = https://github.com/VundleVim/Vundle.vim.git
-[submodule "vender/dracula/zsh"]
-	path = vender/dracula/zsh
-	url = git@github.com:dracula/zsh.git
+
