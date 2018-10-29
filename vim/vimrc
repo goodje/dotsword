@@ -29,6 +29,10 @@ set guioptions=egmrti
 call matchadd("ColorColumn", '\%121v', 120)
 highlight ColorColumn ctermbg=8 guibg=lightgrey
 highlight LineNr ctermfg=grey
+highlight CursorLine ctermbg=LightBlue
+
+"""" split
+set splitright
 
 """" tab, indent
 set nowrap
@@ -43,7 +47,7 @@ au BufNewFile,BufRead *.py
     \ set tabstop=4 |
     \ set softtabstop=4 |
     \ set shiftwidth=4 |
-    \ set textwidth=79 |
+    \ set textwidth=120 |
     \ set expandtab |
     \ set autoindent |
     \ set fileformat=unix
@@ -56,7 +60,7 @@ au BufNewFile,BufRead *.js, *.html, *.css
 """" search
 set showmatch
 set hlsearch
-nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
+"nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
 
 """" misc
 " set hidden
@@ -73,6 +77,11 @@ set foldlevelstart=10   " open most folds by default
 
 set foldmethod=indent
 set foldlevel=99
+
+"""" remember the cursor last opened
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+endif
 
 " change cursor from block to vertical line, allows cursor change in tmux mode
 if exists('$TMUX')
