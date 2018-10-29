@@ -75,15 +75,16 @@ set laststatus=2
 
 " YouCompleteMe
 let g:ycm_autoclose_preview_window_after_completion=1
-map <leader>g  :YcmCompleter GoToDefinitionElseDeclaration<CR>
+map <F2>  :YcmCompleter GoTo<CR>
+
 "python with virtualenv support
-py << EOF
+py3 << EOF
 import os
 import sys
 if 'VIRTUAL_ENV' in os.environ:
   project_base_dir = os.environ['VIRTUAL_ENV']
   activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-  execfile(activate_this, dict(__file__=activate_this))
+  exec(compile(open(activate_this, "rb").read(), activate_this, 'exec'), dict(__file__=activate_this))
 EOF
 
 " SimpliypFold
@@ -103,6 +104,11 @@ map <C-n> :NERDTreeToggle<CR>
 " open NERDTree automatically when vim starts up on opening a directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-let NERDTreeIgnore=['\.pyc$', '\~$'] "ignore files in NERDTree
+let NERDTreeIgnore=['.swp$', '\.pyc$', '__pycache__', '\~$'] "ignore files in NERDTree
+let NERDTreeShowHidden=1
+" let g:NERDTreeWinPos = "right"
 
-
+" ctrlp
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  'DS_Store\|\.git$\|\.hg$\|\.svn$\|bower_components$\|dist$\|node_modules$\|project_files$\|test$|__pycache__\',
+    \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
