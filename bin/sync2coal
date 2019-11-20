@@ -1,0 +1,124 @@
+#! /bin/bash
+
+test -z "$SWORD_PATH" && SWORD_PATH=~/.sword
+
+. $SWORD_PATH/pre.sh
+
+ENCRYPT=${SWORD_PATH}/bin/encrypt_file
+DECRYPT=${SWORD_PATH}/bin/decrypt_file
+
+CLASSIFIED_CFG=${SWORD_PATH}/config/classified_files.conf
+CLAS_SAVING_PATH=${SWORD_PATH}/vendors/dotcoal/crypto
+KEY_FILE=${SWORD_PATH}/.key
+test -z "$MODE" && MODE=to_coal  # to_coal, from_coal
+force=false
+
+if [[ $1 = "-f" ]]; then
+    force=true
+fi
+
+# password
+if [[ -f $KEY_FILE ]]; then
+    key_param="-kfile ${KEY_FILE}"
+
+else
+
+    read -s -p "Enter cryptokey: " key
+    if [[ -z $key ]]; then
+        echo "cryptokey can't be empty."
+        exit -1
+    fi
+    key_param="-k ${key}"
+fi
+
+grep -E -v '^[[:blank:]]*(#|$)' $CLASSIFIED_CFG \
+| while read line; do
+
+    if [[ $MODE = "from_coal" ]]; then
+        src_file=${CLAS_SAVING_PATH}/${line}.enc
+        dest_file=${SWORD_PATH}/${line}
+        is_encrypt=false
+    else
+        src_file=${SWORD_PATH}/${line}
+        dest_file=${CLAS_SAVING_PATH}/${line}.enc
+        is_encrypt=true
+    fi
+
+    write=false
+    if [[ ! -f $src_file ]] ; then
+        echo "warning: $src_file not exists, ignored."
+	    continue
+    fi
+
+    # create destination dirname
+    if [[ ! -d `dirname $dest_file ` ]]; then
+	    echo "`dirname $dest_file`} not exists, create it."
+	    mkdir -p `dirname $dest_file`
+        if [[ $? != 0 ]]; then
+            echo "can't make dir '`dirname $dest_file`'"
+            exit -1
+        fi
+    fi
+
+    # if destination exists
+    if [[ -f $dest_file ]]; then
+        permission_src=`ls -l $src_file | awk '{print $1}'`
+        permission_dest=`ls -l $dest_file | awk '{print $1}'`
+
+        if [[ $MODE = "from_coal" ]]; then
+            diff_result=`$DECRYPT $src_file $key_param | diff ${dest_file} -`
+        else
+            diff_result=`$DECRYPT $dest_file $key_param | diff ${src_file} -`
+        fi
+
+        if [[ $? == 0 ]]; then
+            continue
+        fi
+
+        if [[ -z $diff_result && $permission_src = $permission_dest ]]; then
+            echo "$src_file: no changes, skipped."
+            continue
+        fi
+
+        echo "'$src_file' -> '$dest_file' changes:"
+        if [[ -n $diff_result ]]; then
+            echo "$diff_result"
+        fi
+        if [[ $permission_src != $permission_dest ]]; then
+            echo "$permission_src -> $permission_dest"
+        fi
+
+        if [[ "$force" = "true" ]]; then
+            write=true
+        else
+            echo "give param -f force sync."
+            continue
+        fi
+
+    else
+        write=true
+    fi
+
+    if [[ "$write" = "true" ]]; then
+
+        if [[ "$is_encrypt" = "true" ]]; then
+            $ENCRYPT $src_file $dest_file $key_param
+        else
+            $DECRYPT $src_file $dest_file $key_param
+        fi
+
+        if [[ $? == 0 ]]; then
+            continue
+        fi
+
+        if [[ $os = "mac" ]]; then
+            chmod `stat -f %A $src_file` $dest_file
+        else
+            chmod --reference=$src_file $dest_file
+        fi
+
+        echo "$dest_file: written."
+    fi
+
+done
+

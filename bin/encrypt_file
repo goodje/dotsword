@@ -1,0 +1,60 @@
+#! /bin/bash
+
+key=
+kfile=
+in=
+out=
+
+enc_args=
+
+for (( i=1; i<=$#; i++ ))
+do
+    param=${!i}
+    if [[ $param =~ ^-k$ ]]; then
+        option=key # remember for next param
+        continue
+    elif [[ $param =~ ^-kfile$ ]]; then
+        option=kfile
+        continue
+    fi
+
+    # check previous param, if is a param name, this param should be param value
+    case $option in
+    key)
+        enc_args="${enc_args} -k ${param}"
+        option=
+        ;;
+
+    kfile)
+        enc_args="${enc_args} -kfile ${param}"
+        option=
+        ;;
+
+    *) if [[ -z $in ]]; then
+            in=$param
+        elif [[ -z $out ]]; then
+            out=$param
+        fi
+    esac
+done
+
+
+if [[ -z $in ]]; then
+    echo "Usage: encrypt_file [-k key]|[-kfile key file path] raw_file [out_file]"
+    exit -1
+fi
+
+output="$(openssl enc -aes-256-ecb -md sha256 -a $enc_args -in $in)"
+
+if [[ $? != 0 ]]; then
+    echo # new line
+    echo "encrypting file \"${in}\" failed"
+    exit $?
+fi
+
+if [[ -z $output ]]; then
+    echo "$output"
+else
+    echo "$output" > $out
+fi
+

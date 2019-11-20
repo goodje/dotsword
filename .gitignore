@@ -1,3 +1,11 @@
+# dotsword
+.key
+.temp/
+shell.custom.rc
+
+# JetBrains
+.idea/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
