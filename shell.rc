@@ -1,0 +1,47 @@
+SWORD_PATH=${HOME}/.sword
+
+source ${SWORD_PATH}/pre.sh
+
+# -- alias
+alias ll="ls -alh"
+alias l="ll"
+alias tmux="TERM=screen-256color tmux"
+
+alias k='kubectl'
+alias kg='kubectl get'
+alias kgp='kubectl get pods'
+alias kgd='kubectl deployments'
+alias kgs='kubectl get services'
+alias kgd='kubectl get deployments'
+alias kd='kubectl describe'
+
+# -- PATH
+if [[ -d ~/.local/bin ]]; then
+    export PATH=~/.local/bin:$PATH
+fi
+export PATH=~/.sword/bin:$PATH
+
+# -- encoding
+export LC_ALL=en_US.UTF-8
+export CLICOLOR=1 #terminal color
+export TERM=xterm-256color
+
+# -- zsh
+if [[ $SHELL == *"/zsh" ]]; then
+    ZSH_CUSTOM=$SWORD_PATH/zsh
+    # DISABLE_AUTO_TITLE="true"
+fi
+
+# powerline, used for enhancing shell, powerline foot is required
+# source ~/.local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh
+
+# custom rc
+if [[ -f ${SWORD_PATH}/shell.custom.rc ]]; then
+    source_include ${SWORD_PATH}/shell.custom.rc
+fi
+
+if [[ -f $SWORD_CUSTOM_PATH/classified.shell.rc ]]; then
+    source_include $SWORD_CUSTOM_PATH/classified.shell.rc
+fi
+
+set -o vi

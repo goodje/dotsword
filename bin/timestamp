@@ -1,0 +1,8 @@
+#! /usr/bin/env python
+
+import time
+import sys
+
+ts = time.time()
+print long(ts)
+

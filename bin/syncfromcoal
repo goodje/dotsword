@@ -1,0 +1,10 @@
+#! /bin/bash
+
+[[ -z "$SWORD_PATH" ]] && SWORD_PATH=~/.sword
+
+if [[ $1 == "-f" ]]; then
+    force="-f"
+fi
+
+MODE=from_coal $SWORD_PATH/bin/sync2coal $force
+

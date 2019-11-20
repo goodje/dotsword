@@ -1,0 +1,37 @@
+#!/bin/bash
+
+USER_NAME="goodje"
+USER_EMAIL="1475199+goodje@users.noreply.github.com"
+GLOBAL=
+SETUP_HOOK=1
+
+
+for i in "$@"; do
+case $i in
+    -n=*|--name=*)
+    USER_NAME="${i#*=}"
+    shift # past argument=value
+    ;;
+    -m=*|--email=*)
+    USER_EMAIL="${i#*=}"
+    shift # past argument=value
+    ;;
+    -g|--global)
+    GLOBAL="--global"
+    shift # past argument=value
+    ;;
+esac
+done
+
+# finish initiation
+
+
+git config ${GLOBAL} user.name "${USER_NAME}"
+git config ${GLOBAL} user.email "${USER_EMAIL}"
+
+if [[ -n "${SETUP_HOOK}" ]]; then
+    if [[ -z "${GLOBAL}" ]]; then
+        cp ~/.sword/custom/classified.git.hook.prepare-commit-msg .git/hooks/prepare-commit-msg
+        chmod u+x .git/hooks/prepare-commit-msg
+    fi
+fi
