@@ -28,6 +28,8 @@ Plug 'mhinz/vim-signify'  " Show a diff using Vim its sign column
 " autocomplete
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+Plug 'pedrohdz/vim-yaml-folds'  " yaml fold
+
 if has('nvim')
     " Plug 'shougo/deoplete.nvim'
 endif

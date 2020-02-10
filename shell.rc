@@ -2,10 +2,22 @@ SWORD_PATH=${HOME}/.sword
 
 source ${SWORD_PATH}/pre.sh
 
+# -- PATH
+if [[ -d /snap/bin ]]; then
+    export PATH=/snap/bin:$PATH
+fi
+
+if [[ -d ~/.local/bin ]]; then
+    export PATH=~/.local/bin:$PATH
+fi
+
+export PATH=~/.sword/bin:$PATH
+
 # -- alias
 alias ll="ls -alh"
 alias l="ll"
 alias tmux="TERM=screen-256color tmux"
+alias s="cd $SWORD_PATH"
 
 alias k='kubectl'
 alias kg='kubectl get'
@@ -14,12 +26,7 @@ alias kgd='kubectl deployments'
 alias kgs='kubectl get services'
 alias kgd='kubectl get deployments'
 alias kd='kubectl describe'
-
-# -- PATH
-if [[ -d ~/.local/bin ]]; then
-    export PATH=~/.local/bin:$PATH
-fi
-export PATH=~/.sword/bin:$PATH
+alias kl='kubectl logs'
 
 # -- encoding
 export LC_ALL=en_US.UTF-8
