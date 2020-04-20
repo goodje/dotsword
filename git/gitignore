@@ -1,11 +1,14 @@
 .svn/
 .DS_Store
 *.swp
+*.swo
 
 #########
 # Python
 .venv/
 .venv
+.venv3
+.venv2
 __pycache__/
 
 ##########
