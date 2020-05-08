@@ -98,7 +98,7 @@ $aws autocomplete
 aws-cli pip install awscli
 
 == code search
- & the_silver_searcher sudo apt-get install -y silversearcher-ag or brew install the_silver_searcher
+ & the_silver_searcher(ag, faster than ack) sudo apt-get install -y silversearcher-ag or brew install the_silver_searcher
 
 == tig
   & git browswer in CLI https://jonas.github.io/tig/INSTALL.html
