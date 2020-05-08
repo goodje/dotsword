@@ -1,7 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
 " color scheme
-Plug 'dracula/vim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 " Plug 'jnurmine/Zenburn'
 " Plug 'altercation/vim-colors-solarized'
 
@@ -64,6 +64,7 @@ else
   " colorscheme zenburn
   " let g:dracula_italic = 0 " without this, the italic texts will be highlited
   colorscheme dracula
+  color dracula
   " highlight Normal ctermbg=None " using system background
 endif
 

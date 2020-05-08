@@ -51,4 +51,4 @@ if [[ -f $SWORD_CUSTOM_PATH/classified.shell.rc ]]; then
     source_include $SWORD_CUSTOM_PATH/classified.shell.rc
 fi
 
-set -o vi
+# set -o vi

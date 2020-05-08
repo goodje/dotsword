@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+
+import random
+import sys
+import copy
+
+
+def help():
+    print("""stringen [options] length
+ options:
+   --uppercase          -u include uppercase
+   --disable-smallcase  -S disable small-case
+   --digit              -d include digits
+   --special            -s include special characters !@#
+   --addition=characters   additioanl characters
+   --exclude=characters    exclude characters, e.g 0oOD@
+
+   By default, special characters don't include ', ", $, (, ), {, }, [, ], /, \\, if you need those
+   characters, specify them with --addition
+""")
+
+smalcase_chars = {chr(x) for x in range(97, 123)}
+uppercase_chars = {chr(x) for x in range(65, 91)}
+digit_chars = {str(x) for x in range(0, 9)}
+special_chars = {x for x in "~`!@#%^&*_+|;:,.<>?"}
+
+
+def generate(length, small=True, upper=False, digit=False, special=False, addition={}, exclude={}):
+    collection = set()
+
+    if small:
+        collection |= smalcase_chars
+
+    if upper:
+        collection |= uppercase_chars
+
+    if digit:
+        collection |= digit_chars
+
+    if special:
+        collection |= special_chars
+
+    if addition:
+        collection |= addition
+
+    if exclude:
+        collection -= exclude
+
+    collection = list(collection)
+    result = []
+    collection_size = len(collection)
+    if collection_size == 0:
+        print("character collection is empty")
+        return None
+
+    for i in range(length):
+        result.append(collection[random.randrange(collection_size)])
+
+    print("".join(result))
+
+def parse_arguments():
+    args = copy.copy(sys.argv)
+    args.pop(0)  # command name
+
+    options = {}
+
+    while len(args) > 0:
+        arg = args.pop(0)
+        if arg in {"--uppercase", "-u"}:
+            options['upper'] = True
+        elif arg in {"--disable-smallcase", "-S"}:
+            options['small'] = False
+        elif arg in {"--digit", "-d"}:
+            options['digit'] = True
+        elif arg in {"--special", "-s"}:
+            options['special'] = True
+        elif arg.startswith("--addition="):
+            options['addition'] = set([x for x in arg[len("--addition="):]])
+        elif arg.startswith("--exclude="):
+            options['exclude'] = set([x for x in arg[len("--exclude="):]])
+        else:
+            options["length"] = int(arg)
+
+    return options
+
+
+if __name__ == "__main__":
+    options = parse_arguments()
+    if "length" not in options or options["length"] < 1:
+        help()
+        exit(-1)
+
+    generate(**options)
+

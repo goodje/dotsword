@@ -23,7 +23,7 @@ if &t_Co > 1
 endif
 set number
 set showcmd             " show command in bottom bar
-set cursorline          " highlight current line
+" set cursorline          " highlight current line
 set wildmenu            " visual autocomplete for command menu
 set lazyredraw          " redraw only when we need to.
 set ruler
