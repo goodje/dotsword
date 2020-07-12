@@ -96,10 +96,10 @@ augroup Binary
 augroup END
 
 " folding
-set foldenable          " enable folding
-set foldlevelstart=1   " open most folds by default
-set foldmethod=syntax
-" set foldmethod=indent
+set foldenable           " enable folding
+set foldlevelstart=1     " open most folds by default
+set foldmethod=indent
+" set foldmethod=syntax  " slow when the opend file is big
 set foldlevel=1
 
 
@@ -107,7 +107,8 @@ set foldlevel=1
 set showmatch
 set hlsearch
 " clear highlight on pressing ESC
-nnoremap <esc> :noh<return><esc>
+" nnoremap <esc> :noh<return><esc> " this cause VIM starting in REPLACE mode
+nnoremap <leader><space> :noh<return>
 "nnoremap <silent> <Esc> :nohlsearch<Bar>:echo<CR>
 
 
