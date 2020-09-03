@@ -3,7 +3,6 @@
 SWORD_PATH=${HOME}/.sword
 . $SWORD_PATH/pre.sh
 
-cd $SWORD_PATH
 git submodule init
 git submodule update
 
@@ -12,38 +11,39 @@ git submodule update
 # sh -c '${SWORD_PATH}/bin/syncfromcoal'
 
 # timestamp
-sudo ln -snf /usr/share/zoneinfo/Asia/Singapore /etc/localtime
+if [[ $SET_TIMEZONE ]]; then
+    sudo ln -snf /usr/share/zoneinfo/Asia/Singapore /etc/localtime
+fi
 
 # ## dependencies
 if [[ os = "linux" ]]; then
     # assuming linux distribution is Ubuntu
     sudo apt update
-    sudo apt-get install -y curl wget openssl sysstat \
+    sudo apt-get install -y \
+        curl wget openssl sysstat \
         build-essential cmake python3-dev \
         libncurses5-dev libncursesw5-dev libpq-dev \
         mongodb-clients redis-tools liblzo2-dev \
         htop
 
+    echo "sudo apt-get install -y zsh"
+    sudo apt-get install -y zsh
+
 elif [[ os = "mac" ]]; then
     xcode-select --install
-    which brew
-    # /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    # brew install wget
+    if ! command -v brew &> /dev/null; then
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+    fi
+
+    echo "brew install zsh zsh-completions"
+    brew install zsh zsh-completions
 fi
 
 # zsh
 # https://github.com/robbyrussell/oh-my-zsh/wiki/Installing-ZSH
-if [[ os = "mac" ]]; then
-    echo "brew install zsh zsh-completions"
-    brew install zsh zsh-completions
-elif [[ os = "linux" ]]; then
-    # assuming os is ubuntu
-    echo "sudo apt-get install -y zsh"
-    sudo apt-get install -y zsh
-fi
 
 # oh-my-zsh
-if [[ -x $(which zsh) ]]; then
+if ! command -v zsh &> /dev/null; then
     curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh
 
     grep "source ${SWORD_PATH}/shell.rc" ~/.zshrc
