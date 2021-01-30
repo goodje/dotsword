@@ -4,6 +4,10 @@
 *.swo
 *.swn
 
+#####
+# VIM
+.vim/
+
 #########
 # Python
 venv/
