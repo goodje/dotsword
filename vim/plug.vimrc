@@ -46,8 +46,12 @@ Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-fugitive' " A Git wrapper
 
 Plug 'ctrlpvim/ctrlp.vim' " find file
-Plug 'mileszs/ack.vim' " code search, ack or ag is required to be installed
 Plug 'mhinz/vim-signify'  " Show a diff using Vim its sign column
+
+" code search
+" performance wise, ripgrep > silver search(ag) > ack > grep
+Plug 'jremmen/vim-ripgrep' " code search, ripgrep is reqired to be installed beforehand
+" Plug 'mileszs/ack.vim' " code search, ack or ag is required to be installed
 
 " Plug 'python-mode/python-mode'  " this plugin is very slow
 
