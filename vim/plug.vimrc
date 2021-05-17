@@ -32,25 +32,34 @@ Plug 'morhetz/gruvbox', { 'as': 'gruvbox' }
 " Plug 'jnurmine/Zenburn'
 " Plug 'altercation/vim-colors-solarized'
 
-Plug 'bitc/vim-bad-whitespace' " Highlights whitespace at the end of lines, only in modifiable buffers
-Plug 'tmhedberg/SimpylFold' " too slow
-Plug 'pedrohdz/vim-yaml-folds'  " yaml fold
-" to match indentation more closely what is suggested in PEP 8
-Plug 'vim-scripts/indentpython.vim'  " An alternative indentation script for python
-Plug 'Yggdroot/indentLine'  " A vim plugin to display the indention levels with thin vertical lines
-
 Plug 'scrooloose/nerdtree'
 " Plug 'jistr/vim-nerdtree-tabs'  " actually, vim provides tab feature
+
+" fzf also has the feature of finding files
+" Plug 'ctrlpvim/ctrlp.vim' " find file
+
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+" Highlights whitespace at the end of lines, only in modifiable buffers
+Plug 'bitc/vim-bad-whitespace'
+" too slow
+Plug 'tmhedberg/SimpylFold'
+" A vim plugin to display the indention levels with thin vertical lines
+Plug 'Yggdroot/indentLine'
+
+" to comment a line or block
+Plug 'preservim/nerdcommenter'
 
 " Plug 'vim-syntastic/syntastic'  " Syntax checking hacks for vim
 Plug 'tpope/vim-fugitive' " A Git wrapper
 
-Plug 'ctrlpvim/ctrlp.vim' " find file
 Plug 'mhinz/vim-signify'  " Show a diff using Vim its sign column
 
 " code search
 " performance wise, ripgrep > silver search(ag) > ack > grep
-Plug 'jremmen/vim-ripgrep' " code search, ripgrep is reqired to be installed beforehand
+" commented ripgrep because fzf also integrated ripgrep
+" Plug 'jremmen/vim-ripgrep' " code search, ripgrep command is reqired to be installed beforehand
 " Plug 'mileszs/ack.vim' " code search, ack or ag is required to be installed
 
 " Plug 'python-mode/python-mode'  " this plugin is very slow
@@ -63,11 +72,20 @@ if has('nvim')
     " Plug 'shougo/deoplete.nvim'
 endif
 
+" distraction-free apperence, togger by :Goyo, :Goyo!(trun off)
+" Plug 'junegunn/goyo.vim'
+
+"" yaml
+Plug 'pedrohdz/vim-yaml-folds'  " yaml fold
+
+"" Python
+" to match indentation more closely what is suggested in PEP 8
+Plug 'vim-scripts/indentpython.vim'  " An alternative indentation script for python
 " lint
 Plug 'nvie/vim-flake8'
 
-" distraction-free apperence, togger by :Goyo, :Goyo!(trun off)
-" Plug 'junegunn/goyo.vim'
+"" Go lang
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " Initialize plugin system
 call plug#end()
@@ -100,13 +118,19 @@ map <C-n> :NERDTreeToggle<CR>
 " open NERDTree automatically when vim starts up on opening a directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-let NERDTreeIgnore=['.swp$', '\.pyc$', '__pycache__', '\~$'] "ignore files in NERDTree
+let NERDTreeIgnore=['.idea', '.DS_Store', '.swp$', '\.pyc$', '__pycache__', '\~$'] "ignore files in NERDTree
 let NERDTreeShowHidden=1
 " let g:NERDTreeWinPos = "right"
 
 " bad white space
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h
     \ match BadWhitespace /\s\+$/
+
+""" nerdcommenter
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
+" Align line-wise comment delimiters flush left instead of following code indentation
+" let g:NERDDefaultAlign = 'left'
 
 """ YouCompleteMe
 " let g:ycm_autoclose_preview_window_after_completion=1
@@ -173,10 +197,18 @@ let g:ctrlp_custom_ignore = {
     \ 'dir':  'DS_Store\|\.venv\|\.venv3\|venv\|venv3\|\.git$\|\.hg$\|\.svn$\|bower_components$\|dist$\|node_modules$\|project_files$\|test$|__pycache__\',
     \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
 
-""" ag or acg
+""" ag or ack
 if executable('ag')
     let g:ackprg = 'ag --vimgrep'
 endif
+
+""" fzf
+nnoremap <silent> <C-f> :Files<CR>
+" fzf integrated ripgrep
+nnoremap <silent> <Leader>f :Rg<CR>
+" Rg to not match files
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
 
 """ SimpylFold
 " let g:SimpylFold_docstring_preview = 1
@@ -184,6 +216,7 @@ endif
 " let b:SimpylFold_fold_docstring = 1
 " let g:SimpylFold_fold_import = 1
 
+""" Python
 """ flake8
 
 """ externals
