@@ -69,21 +69,21 @@ au BufNewFile,BufRead *.py
     \ set shiftwidth=4 |
     \ set textwidth=120 |
     \ set expandtab |
-    \ set autoindent |
+    \ set autoindent
 
 au BufNewFile,BufRead *.js,*.json,*.jsx,*.html,*.css,*.yml,*.yaml,*.sql
     \ set tabstop=2 |
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
     \ set expandtab |
-    \ set autoindent |
+    \ set autoindent
 
-autocmd FileType go \
-    set tabstop=4 |
-    set softtabstop=4 |
-    set shiftwidth=4 |
-    set noexpandtab |
-    set autoindent |
+autocmd FileType go
+    \ set tabstop=4 |
+    \ set softtabstop=4 |
+    \ set shiftwidth=4 |
+    \ set noexpandtab |
+    \ set autoindent
 
 " If one has a particular extension that one uses for binary files (such as exe,
 " bin, etc), you may find it helpful to automate the process with the following
