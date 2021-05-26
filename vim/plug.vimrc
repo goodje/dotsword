@@ -52,9 +52,11 @@ Plug 'Yggdroot/indentLine'
 Plug 'preservim/nerdcommenter'
 
 " Plug 'vim-syntastic/syntastic'  " Syntax checking hacks for vim
-Plug 'tpope/vim-fugitive' " A Git wrapper
+" A Git wrapper
+Plug 'tpope/vim-fugitive'
 
-Plug 'mhinz/vim-signify'  " Show a diff using Vim its sign column
+" Show a diff using Vim its sign column
+Plug 'mhinz/vim-signify'
 
 " code search
 " performance wise, ripgrep > silver search(ag) > ack > grep
@@ -76,11 +78,13 @@ endif
 " Plug 'junegunn/goyo.vim'
 
 "" yaml
-Plug 'pedrohdz/vim-yaml-folds'  " yaml fold
+" yaml fold
+Plug 'pedrohdz/vim-yaml-folds'
 
 "" Python
 " to match indentation more closely what is suggested in PEP 8
-Plug 'vim-scripts/indentpython.vim'  " An alternative indentation script for python
+" An alternative indentation script for python
+Plug 'vim-scripts/indentpython.vim'
 " lint
 Plug 'nvie/vim-flake8'
 
@@ -118,7 +122,8 @@ map <C-n> :NERDTreeToggle<CR>
 " open NERDTree automatically when vim starts up on opening a directory
 autocmd StdinReadPre * let s:std_in=1
 autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-let NERDTreeIgnore=['.idea', '.DS_Store', '.swp$', '\.pyc$', '__pycache__', '\~$'] "ignore files in NERDTree
+" ignore files in NERDTree
+let NERDTreeIgnore=['.idea', '.DS_Store', '.swp$', '\.pyc$', '__pycache__', '\~$']
 let NERDTreeShowHidden=1
 " let g:NERDTreeWinPos = "right"
 
@@ -219,6 +224,6 @@ command! -bang -nargs=* Rg
 """ Python
 """ flake8
 
-""" externals
+"""
 " source ~/.sword/vim/pymode.vimrc
 
