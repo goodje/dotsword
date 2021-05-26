@@ -3,7 +3,8 @@
 " This must be first, because it changes other options as a side effect.
 set nocompatible
 
-filetype off                  " required for Vundle
+" Vundle requires it to be off
+filetype on
 
 let mapleader=","
 
@@ -60,6 +61,7 @@ set shiftwidth=4        " number of spaces to use for autoindenting
 set expandtab
 set smarttab            " insert tabs on the start of a line according to shiftwidth, not tabstop
 set autoindent          " always set autoindenting on
+set fileformat=unix
 
 au BufNewFile,BufRead *.py
     \ set tabstop=4 |
@@ -68,7 +70,6 @@ au BufNewFile,BufRead *.py
     \ set textwidth=120 |
     \ set expandtab |
     \ set autoindent |
-    \ set fileformat=unix
 
 au BufNewFile,BufRead *.js,*.json,*.jsx,*.html,*.css,*.yml,*.yaml,*.sql
     \ set tabstop=2 |
@@ -76,7 +77,13 @@ au BufNewFile,BufRead *.js,*.json,*.jsx,*.html,*.css,*.yml,*.yaml,*.sql
     \ set shiftwidth=2 |
     \ set expandtab |
     \ set autoindent |
-    \ set fileformat=unix
+
+autocmd FileType go \
+    set tabstop=4 |
+    set softtabstop=4 |
+    set shiftwidth=4 |
+    set noexpandtab |
+    set autoindent |
 
 " If one has a particular extension that one uses for binary files (such as exe,
 " bin, etc), you may find it helpful to automate the process with the following
