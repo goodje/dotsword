@@ -91,6 +91,16 @@ Plug 'nvie/vim-flake8'
 "" Go lang
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
+"" UML
+Plug 'aklt/plantuml-syntax'
+" uml preview in vim, Java is required
+Plug 'scrooloose/vim-slumlord'
+
+Plug 'tyru/open-browser.vim'
+
+" PlantUML previewer in browser
+Plug 'weirongxu/plantuml-previewer.vim'
+
 " Initialize plugin system
 call plug#end()
 
