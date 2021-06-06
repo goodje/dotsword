@@ -68,13 +68,13 @@ au BufNewFile,BufRead *.py
     \ set softtabstop=4 |
     \ set shiftwidth=4 |
     \ set textwidth=120 |
-    \ set expandtab |
+    \ set expandtab
 
 au BufNewFile,BufRead *.js,*.json,*.jsx,*.html,*.css,*.yml,*.yaml,*.sql
     \ set tabstop=2 |
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
-    \ set expandtab |
+    \ set expandtab
 
 autocmd BufNewFile,BufRead *.go
     \ set tabstop=4 |
@@ -101,10 +101,10 @@ augroup END
 
 " folding
 set foldenable           " enable folding
-set foldlevelstart=1     " open most folds by default
-set foldmethod=indent
+" set foldlevelstart=1     " open most folds by default
+" set foldmethod=indent
 " set foldmethod=syntax  " slow when the opend file is big
-set foldlevel=1
+" set foldlevel=1
 
 
 """" search
