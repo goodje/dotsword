@@ -70,7 +70,7 @@ au BufNewFile,BufRead *.py
     \ set textwidth=120 |
     \ set expandtab
 
-au BufNewFile,BufRead *.js,*.json,*.jsx,*.html,*.css,*.yml,*.yaml,*.sql
+au BufNewFile,BufRead *.js,*.json,*.jsx,*.html,*.css,*.yml,*.yaml,*.sql,*.proto
     \ set tabstop=2 |
     \ set softtabstop=2 |
     \ set shiftwidth=2 |
