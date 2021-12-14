@@ -62,6 +62,7 @@ Plug 'mhinz/vim-signify'
 " performance wise, ripgrep > silver search(ag) > ack > grep
 " commented ripgrep because fzf also integrated ripgrep
 " Plug 'jremmen/vim-ripgrep' " code search, ripgrep command is reqired to be installed beforehand
+" code search, ack or ag is required to be installed
 " Plug 'mileszs/ack.vim' " code search, ack or ag is required to be installed
 
 " Plug 'python-mode/python-mode'  " this plugin is very slow
@@ -218,9 +219,9 @@ if executable('ag')
 endif
 
 """ fzf
-nnoremap <silent> <C-f> :Files<CR>
+nnoremap <silent> <C-f> :Rg<CR>
 " fzf integrated ripgrep
-nnoremap <silent> <Leader>f :Rg<CR>
+nnoremap <silent> <Leader>f :Files<CR>
 " Rg to not match files
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
