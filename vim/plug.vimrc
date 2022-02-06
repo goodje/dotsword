@@ -218,10 +218,10 @@ endfunction
 
 """ ctrlp
 " let g:ctrlp_dotfiles = 1
-let g:ctrlp_show_hidden = 1
-let g:ctrlp_custom_ignore = {
-    \ 'dir':  'DS_Store\|\.venv\|\.venv3\|venv\|venv3\|\.git$\|\.hg$\|\.svn$\|bower_components$\|dist$\|node_modules$\|project_files$\|test$|__pycache__\',
-    \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
+" let g:ctrlp_show_hidden = 1
+" let g:ctrlp_custom_ignore = {
+"     \ 'dir':  'DS_Store\|\.venv\|\.venv3\|venv\|venv3\|\.git$\|\.hg$\|\.svn$\|bower_components$\|dist$\|node_modules$\|project_files$\|test$|__pycache__\',
+"     \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
 
 """ ag or ack
 if executable('ag')
@@ -248,6 +248,4 @@ nnoremap <silent> <Leader>b :Buffers<CR>
 
 """
 " source ~/.sword/vim/pymode.vimrc
-
-
 
