@@ -55,6 +55,12 @@ Plug 'preservim/nerdcommenter'
 " A Git wrapper
 Plug 'tpope/vim-fugitive'
 
+" fugitive plugin for Growser
+" Github
+Plug 'tpope/vim-rhubarb'
+" Gitlab
+Plug 'shumphrey/fugitive-gitlab.vim'
+
 " Show a diff using Vim its sign column
 Plug 'mhinz/vim-signify'
 
@@ -74,6 +80,8 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 if has('nvim')
     " Plug 'shougo/deoplete.nvim'
 endif
+
+Plug 'github/copilot.vim'
 
 " distraction-free apperence, togger by :Goyo, :Goyo!(trun off)
 " Plug 'junegunn/goyo.vim'
@@ -137,6 +145,8 @@ autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in
 let NERDTreeIgnore=['.idea', '.DS_Store', '.swp$', '\.pyc$', '__pycache__', '\~$']
 let NERDTreeShowHidden=1
 " let g:NERDTreeWinPos = "right"
+" synchronise with opened file
+map <leader>r :NERDTreeFind<cr>
 
 " bad white space
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h
@@ -225,6 +235,7 @@ nnoremap <silent> <Leader>f :Files<CR>
 " Rg to not match files
 command! -bang -nargs=* Rg
   \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+nnoremap <silent> <Leader>b :Buffers<CR>
 
 """ SimpylFold
 " let g:SimpylFold_docstring_preview = 1
@@ -237,4 +248,6 @@ command! -bang -nargs=* Rg
 
 """
 " source ~/.sword/vim/pymode.vimrc
+
+
 
