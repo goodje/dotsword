@@ -51,6 +51,8 @@ Plug 'Yggdroot/indentLine'
 " to comment a line or block
 Plug 'preservim/nerdcommenter'
 
+Plug 'preservim/tagbar'
+
 " Plug 'vim-syntastic/syntastic'  " Syntax checking hacks for vim
 " A Git wrapper
 Plug 'tpope/vim-fugitive'
@@ -74,12 +76,30 @@ Plug 'mhinz/vim-signify'
 " Plug 'python-mode/python-mode'  " this plugin is very slow
 
 "" autocomplete
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
+
+" Plug 'Shougo/ddc.vim'
+" Plug 'vim-denops/denops.vim'
+
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'Valloric/YouCompleteMe'  " this plugin is very slow
 
 if has('nvim')
-    " Plug 'shougo/deoplete.nvim'
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+else
+  " Plug 'Shougo/deoplete.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
 endif
+if has('pythonx')
+    if has('python3')
+        set pyxversion=3
+    else
+        set pyxversion=2
+    endif
+endif
+let g:deoplete#enable_at_startup = 1
 
 Plug 'github/copilot.vim'
 
@@ -97,7 +117,7 @@ Plug 'vim-scripts/indentpython.vim'
 " lint
 Plug 'nvie/vim-flake8'
 
-"" Go lang
+"" Golang
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 "" UML
@@ -158,6 +178,11 @@ let g:NERDSpaceDelims = 1
 " Align line-wise comment delimiters flush left instead of following code indentation
 " let g:NERDDefaultAlign = 'left'
 
+let g:go_code_completion_enabled = 1
+let g:go_gopls_complete_unimported = v:null
+let g:go_gopls_deep_completion = v:null
+
+
 """ YouCompleteMe
 " let g:ycm_autoclose_preview_window_after_completion=1
 " map <F2>  :YcmCompleter GoTo<CR>
@@ -167,7 +192,7 @@ let g:NERDSpaceDelims = 1
 
 """ COC
 " autocomplete
-let g:airline#extensions#coc#enabled = 1
+" let g:airline#extensions#coc#enabled = 1
 
 " use <tab> for trigger completion and navigate to the next complete item
 function! s:check_back_space() abort
@@ -175,10 +200,10 @@ function! s:check_back_space() abort
   return !col || getline('.')[col - 1]  =~ '\s'
 endfunction
 
-inoremap <silent><expr> <Tab>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<Tab>" :
-      \ coc#refresh()
+" inoremap <silent><expr> <Tab>
+"      \ pumvisible() ? "\<C-n>" :
+"      \ <SID>check_back_space() ? "\<Tab>" :
+"      \ coc#refresh()
 
 " alternatively, use <c-space>for trigger completion
 " inoremap <silent><expr> <c-space> coc#refresh()
@@ -188,9 +213,9 @@ inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 "Use <cr> to confirm completion
-inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
-autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif " close preview window
+" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+" autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif " close preview window
 
 " To make coc.nvim format your code on <cr>, use keymap:
 " inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
@@ -200,10 +225,10 @@ autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif " close preview wi
 " nmap <silent> ]c <Plug>(coc-diagnostic-next)
 
 " Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
+" nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gy <Plug>(coc-type-definition)
+" nmap <silent> gi <Plug>(coc-implementation)
+" nmap <silent> gr <Plug>(coc-references)
 
 " Use K to show documentation in preview window
 nnoremap <silent> K :call <SID>show_documentation()<CR>
@@ -248,4 +273,27 @@ nnoremap <silent> <Leader>b :Buffers<CR>
 
 """
 " source ~/.sword/vim/pymode.vimrc
+"
 
+"" vim-go
+
+" Go syntax highlighting
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_function_calls = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_operators = 1
+
+" most used
+nmap <silent> gi :GoImplements<cr>
+nmap <silent> gc :GoCallers<cr>
+
+" Status line types/signatures
+let g:go_auto_type_info = 1
+
+" autocomplete prompt to appear automatically whenever you press the dot (.)
+" use Ctrl-n or Ctrl-p to select
+au filetype go inoremap <buffer> . .<C-x><C-o>
+
+" Opening Documentation in a Popup, use K to trigger it
+let g:go_doc_popup_window = 1
