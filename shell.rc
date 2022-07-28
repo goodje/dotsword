@@ -38,6 +38,8 @@ if [[ $SHELL == *"/zsh" ]]; then
     ZSH_CUSTOM=$SWORD_PATH/zsh
     # DISABLE_AUTO_TITLE="true"
 fi
+# disable zsh substitution/autocomplete with URL and backslashes
+DISABLE_MAGIC_FUNCTIONS=true
 
 # powerline, used for enhancing shell, powerline foot is required
 # source ~/.local/lib/python2.7/site-packages/powerline/bindings/zsh/powerline.zsh

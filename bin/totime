@@ -1,20 +1,34 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 
 import sys
 import os
 import datetime
 import time
 
-os.environ['TZ'] = "Asia/Singapore"
-
-if len(sys.argv) == 1:
-    ts = time.time()
-else:
+if len(sys.argv) > 1:
     ts = sys.argv[1]
     if len(str(ts)) not in (10, 13, 16):
         print("param error, timestamp error")
         exit(-1)
 
-    ts = int(int(ts)/(10 ** (len(str(ts)) - 10)))
+    # ts = time.time()
+    # timestamp in second
+    tsis = int(int(ts)/(10 ** (len(str(ts)) - 10)))
 
-print(datetime.datetime.fromtimestamp(ts).strftime("%Y-%m-%d %H:%M:%S %Z"))
+    print(ts, "\t", datetime.datetime.fromtimestamp(tsis).astimezone(datetime.timezone(datetime.timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S %Z"), "\t",
+        datetime.datetime.fromtimestamp(tsis).astimezone(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z"))
+
+else:
+
+    for line in sys.stdin:
+        # sys.stdout.write(line)
+        ts = line.strip()
+
+        if len(str(ts)) not in (10, 13, 16):
+            print(line)
+
+        # timestamp in second
+        tsis = int(int(ts)/(10 ** (len(str(ts)) - 10)))
+
+        print(ts, "\t", datetime.datetime.fromtimestamp(tsis).astimezone(datetime.timezone(datetime.timedelta(hours=8))).strftime("%Y-%m-%d %H:%M:%S %Z"), "\t",
+            datetime.datetime.fromtimestamp(tsis).astimezone(datetime.timezone.utc).strftime("%Y-%m-%d %H:%M:%S %Z"))
