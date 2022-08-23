@@ -19,32 +19,42 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-
 " fancy start screen
 Plug 'mhinz/vim-startify'
 
 "" apperence
+" status bar
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+
 " color scheme
 " Plug 'dracula/vim', { 'as': 'dracula' }
 Plug 'morhetz/gruvbox', { 'as': 'gruvbox' }
 " Plug 'jnurmine/Zenburn'
 " Plug 'altercation/vim-colors-solarized'
 
+" file navigator
 Plug 'scrooloose/nerdtree'
 " Plug 'jistr/vim-nerdtree-tabs'  " actually, vim provides tab feature
 
 " fzf also has the feature of finding files
-" Plug 'ctrlpvim/ctrlp.vim' " find file
-
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+" Plug 'ctrlpvim/ctrlp.vim' " find file
 
+" code search
+" performance wise, ripgrep > silver search(ag) > ack > grep
+" commented ripgrep because fzf also integrated ripgrep
+" Plug 'jremmen/vim-ripgrep' " code search, ripgrep command is reqired to be installed beforehand
+" code search, ack or ag is required to be installed
+" Plug 'mileszs/ack.vim' " code search, ack or ag is required to be installed
+
+" Plug 'python-mode/python-mode'  " this plugin is very slow
+
+"" edit
 " Highlights whitespace at the end of lines, only in modifiable buffers
 Plug 'bitc/vim-bad-whitespace'
-" too slow
-Plug 'tmhedberg/SimpylFold'
+Plug 'tmhedberg/SimpylFold' " too slow
 " A vim plugin to display the indention levels with thin vertical lines
 Plug 'Yggdroot/indentLine'
 
@@ -63,17 +73,8 @@ Plug 'tpope/vim-rhubarb'
 " Gitlab
 Plug 'shumphrey/fugitive-gitlab.vim'
 
-" Show a diff using Vim its sign column
+" Show file changes(based on VCS) using Vim its sign column
 Plug 'mhinz/vim-signify'
-
-" code search
-" performance wise, ripgrep > silver search(ag) > ack > grep
-" commented ripgrep because fzf also integrated ripgrep
-" Plug 'jremmen/vim-ripgrep' " code search, ripgrep command is reqired to be installed beforehand
-" code search, ack or ag is required to be installed
-" Plug 'mileszs/ack.vim' " code search, ack or ag is required to be installed
-
-" Plug 'python-mode/python-mode'  " this plugin is very slow
 
 "" autocomplete
 filetype plugin on
@@ -129,6 +130,15 @@ Plug 'tyru/open-browser.vim'
 
 " PlantUML previewer in browser
 Plug 'weirongxu/plantuml-previewer.vim'
+
+"" PHP
+" Include Phpactor
+Plug 'phpactor/phpactor' ,  {'do': 'composer install', 'for': 'php'}
+
+" Require ncm2 and this plugin
+Plug 'ncm2/ncm2'
+Plug 'roxma/nvim-yarp'
+Plug 'phpactor/ncm2-phpactor'
 
 " Initialize plugin system
 call plug#end()
@@ -287,6 +297,7 @@ let g:go_highlight_operators = 1
 " most used
 nmap <silent> gi :GoImplements<cr>
 nmap <silent> gc :GoCallers<cr>
+nmap <silent> gr :GoReferrers<cr>
 
 " Status line types/signatures
 let g:go_auto_type_info = 1
@@ -297,3 +308,6 @@ au filetype go inoremap <buffer> . .<C-x><C-o>
 
 " Opening Documentation in a Popup, use K to trigger it
 let g:go_doc_popup_window = 1
+
+autocmd BufEnter * call ncm2#enable_for_buffer()
+set completeopt=noinsert,menuone,noselect
