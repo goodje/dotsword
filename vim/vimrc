@@ -149,3 +149,18 @@ let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
 
+"""" Line number
+" turn hybrid line numbers on
+set number relativenumber
+" set nu rnu
+
+" turn hybrid line numbers off
+" set nonumber norelativenumber
+" set nonu nornu
+
+" toggle hybrid line numbers
+" set number! relativenumber!
+" set nu! rnu!
+
+" highlight current line
+set cursorline
