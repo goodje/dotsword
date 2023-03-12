@@ -1,0 +1,67 @@
+#!/bin/bash
+# This bash will update the modification time of files in the current folder
+# earlier by a given param in hours.
+# This script is written by ChatGPT(facinating? isn't it), I fixed a bug and made some tweaks though.
+#
+# Why there is such a script. It's because GoPro writes a wrong time in the
+# video files. I guess it's because GoPro doesn't know my timezone so it writes
+# GMT instead, so the date and time in string is correct(as in my timezone)
+# but wrong timezone, it causes certain time diff between my timezone and GMT.
+# So this script is to correct them.
+
+# Get the current folder path
+folder_path="$(pwd)"
+
+# Get the time to subtract from the modification time in hours
+read -p "Enter the time to subtract from the modification time in hours: " time_diff
+
+# Convert time difference to seconds
+time_diff_seconds=$((time_diff * 3600))
+
+echo "Confirm the following changes:"
+
+# Loop through all files in the folder
+for file in "$folder_path"/*
+do
+    echo $file
+  # Check if the file is a regular file
+  if [ -f "$file" ]
+  then
+    # Get the current modification time in seconds since the epoch
+    mod_time=$(stat -f "%m" "$file")
+
+    # Convert the modification time to a human-readable format
+    mod_time_formatted=$(date -r "$mod_time" +"%Y-%m-%d %H:%M:%S")
+
+    # Calculate the new modification time in a human-readable format
+    new_mod_time=$(date -r "$(($mod_time - $time_diff_seconds))" +"%Y-%m-%d %H:%M:%S")
+
+    # Print the original and new modification times for the file
+    echo "File: $file" "$mod_time_formatted" " -> " "$new_mod_time"
+  fi
+done
+
+# Double confirm the update
+read -p "confirm to update modification time of the files above? (y/n) " confirm
+
+if [ "$confirm" = "y" ]
+then
+  # Loop through all files in the folder
+  for file in "$folder_path"/*
+  do
+    # Check if the file is a regular file
+    if [ -f "$file" ]
+    then
+      # Get the current modification time in seconds since the epoch
+      mod_time=$(stat -f "%m" "$file")
+
+      # Set the new modification time using the 'touch' command
+      touch -mt $(date -r "$(($mod_time - $time_diff_seconds))" +"%Y%m%d%H%M.%S") "$file"
+    fi
+  done
+
+  echo "Modification time of all files updated."
+else
+  echo "Modification time update cancelled."
+fi
+
