@@ -83,15 +83,15 @@ set omnifunc=syntaxcomplete#Complete
 " Plug 'Shougo/ddc.vim'
 " Plug 'vim-denops/denops.vim'
 
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'Valloric/YouCompleteMe'  " this plugin is very slow
 
 if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 else
   " Plug 'Shougo/deoplete.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
+"  Plug 'roxma/nvim-yarp'
+"  Plug 'roxma/vim-hug-neovim-rpc'
 endif
 if has('pythonx')
     if has('python3')
@@ -100,7 +100,7 @@ if has('pythonx')
         set pyxversion=2
     endif
 endif
-let g:deoplete#enable_at_startup = 1
+"let g:deoplete#enable_at_startup = 1
 
 Plug 'github/copilot.vim'
 
@@ -133,12 +133,12 @@ Plug 'weirongxu/plantuml-previewer.vim'
 
 "" PHP
 " Include Phpactor
-Plug 'phpactor/phpactor' ,  {'do': 'composer install', 'for': 'php'}
+" Plug 'phpactor/phpactor' ,  {'do': 'composer install', 'for': 'php'}
 
 " Require ncm2 and this plugin
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
-Plug 'phpactor/ncm2-phpactor'
+" Plug 'ncm2/ncm2'
+" Plug 'roxma/nvim-yarp'
+" Plug 'phpactor/ncm2-phpactor'
 
 " Initialize plugin system
 call plug#end()
@@ -201,55 +201,7 @@ let g:go_gopls_deep_completion = v:null
 " let g:deoplete#enable_at_startup = 1
 
 """ COC
-" autocomplete
-" let g:airline#extensions#coc#enabled = 1
-
-" use <tab> for trigger completion and navigate to the next complete item
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
-
-" inoremap <silent><expr> <Tab>
-"      \ pumvisible() ? "\<C-n>" :
-"      \ <SID>check_back_space() ? "\<Tab>" :
-"      \ coc#refresh()
-
-" alternatively, use <c-space>for trigger completion
-" inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <Tab> and <S-Tab> to navigate the completion list:
-inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-"Use <cr> to confirm completion
-" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
-" autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif " close preview window
-
-" To make coc.nvim format your code on <cr>, use keymap:
-" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
-" Use `[c` and `]c` to navigate diagnostics
-" nmap <silent> [c <Plug>(coc-diagnostic-prev)
-" nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-" Remap keys for gotos
-" nmap <silent> gd <Plug>(coc-definition)
-" nmap <silent> gy <Plug>(coc-type-definition)
-" nmap <silent> gi <Plug>(coc-implementation)
-" nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
+source  ~/.sword/vim/coc.vimrc
 
 """ ctrlp
 " let g:ctrlp_dotfiles = 1
@@ -309,5 +261,5 @@ au filetype go inoremap <buffer> . .<C-x><C-o>
 " Opening Documentation in a Popup, use K to trigger it
 let g:go_doc_popup_window = 1
 
-autocmd BufEnter * call ncm2#enable_for_buffer()
+" autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
