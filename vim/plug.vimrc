@@ -140,6 +140,12 @@ Plug 'weirongxu/plantuml-previewer.vim'
 " Plug 'roxma/nvim-yarp'
 " Plug 'phpactor/ncm2-phpactor'
 
+" Javascript(js)/Typescript(ts)
+Plug 'posva/vim-vue'
+
+" JS ORM framework
+Plug 'prisma/vim-prisma'
+
 " Initialize plugin system
 call plug#end()
 
@@ -221,7 +227,7 @@ nnoremap <silent> <C-f> :Rg<CR>
 nnoremap <silent> <Leader>f :Files<CR>
 " Rg to not match files
 command! -bang -nargs=* Rg
-  \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+  \ call fzf#vim#grep("rg --hidden --glob '!.git/' --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
 nnoremap <silent> <Leader>b :Buffers<CR>
 
 """ SimpylFold
@@ -246,20 +252,68 @@ let g:go_highlight_function_calls = 1
 let g:go_highlight_extra_types = 1
 let g:go_highlight_operators = 1
 
-" most used
-nmap <silent> gi :GoImplements<cr>
-nmap <silent> gc :GoCallers<cr>
-nmap <silent> gr :GoReferrers<cr>
-
 " Status line types/signatures
 let g:go_auto_type_info = 1
-
-" autocomplete prompt to appear automatically whenever you press the dot (.)
-" use Ctrl-n or Ctrl-p to select
-au filetype go inoremap <buffer> . .<C-x><C-o>
 
 " Opening Documentation in a Popup, use K to trigger it
 let g:go_doc_popup_window = 1
 
+augroup GoSettings
+  " most used
+  " nmap <silent> gi :GoImplements<cr>
+  " nmap <silent> gr :GoReferrers<cr>
+  autocmd filetype go nmap <silent> gc :GoCallers<cr>
+
+  " autocomplete prompt to appear automatically whenever you press the dot (.)
+  " use Ctrl-n or Ctrl-p to select
+  autocmd filetype go inoremap <buffer> . .<C-x><C-o>
+
+augroup END
+
 " autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
+
+
+" C/C++
+augroup CSettings
+  autocmd!
+  " set updatetime=300
+  " au CursorHold *.c,*.h sil call CocActionAsync('highlight')
+  au CursorHoldI *.c,*.h sil call CocActionAsync('showSignatureHelp')
+
+
+  " bases
+  nn <silent> xb :call CocLocations('ccls','$ccls/inheritance')<cr>
+  " bases of up to 3 levels
+  nn <silent> xB :call CocLocations('ccls','$ccls/inheritance',{'levels':3})<cr>
+  " derived
+  nn <silent> xd :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true})<cr>
+  " derived of up to 3 levels
+  nn <silent> xD :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true,'levels':3})<cr>
+
+  " caller
+  nn <silent> xc :call CocLocations('ccls','$ccls/call')<cr>
+  " callee
+  nn <silent> xC :call CocLocations('ccls','$ccls/call',{'callee':v:true})<cr>
+
+  " $ccls/member
+  " member variables / variables in a namespace
+  nn <silent> xm :call CocLocations('ccls','$ccls/member')<cr>
+  " member functions / functions in a namespace
+  nn <silent> xf :call CocLocations('ccls','$ccls/member',{'kind':3})<cr>
+  " nested classes / types in a namespace
+  nn <silent> xs :call CocLocations('ccls','$ccls/member',{'kind':2})<cr>
+
+  nmap <silent> xt <Plug>(coc-type-definition)<cr>
+  nn <silent> xv :call CocLocations('ccls','$ccls/vars')<cr>
+  nn <silent> xV :call CocLocations('ccls','$ccls/vars',{'kind':1})<cr>
+
+  nn xx x
+
+  nn <silent><buffer> <C-l> :call CocLocations('ccls','$ccls/navigate',{'direction':'D'})<cr>
+  nn <silent><buffer> <C-k> :call CocLocations('ccls','$ccls/navigate',{'direction':'L'})<cr>
+  nn <silent><buffer> <C-j> :call CocLocations('ccls','$ccls/navigate',{'direction':'R'})<cr>
+  nn <silent><buffer> <C-h> :call CocLocations('ccls','$ccls/navigate',{'direction':'U'})<cr>
+
+augroup END
+
