@@ -58,29 +58,30 @@ set nowrap
 set tabstop=4           " a tab is four spaces
 set softtabstop=4       " when hitting <BS>, pretend like a tab is removed, even if spaces
 set shiftwidth=4        " number of spaces to use for autoindenting
-set expandtab
-set smarttab            " insert tabs on the start of a line according to shiftwidth, not tabstop
 set autoindent          " always set autoindenting on
 set fileformat=unix
 
-au BufNewFile,BufRead *.py
-    \ set tabstop=4 |
-    \ set softtabstop=4 |
-    \ set shiftwidth=4 |
-    \ set textwidth=120 |
-    \ set expandtab
+augroup TabSettingFor2SpacesAsTab
+  autocmd!
+  autocmd FileType vim,javascript,vue,jsx,css,html,yaml,yml,sql,proto setlocal tabstop=2
+    \ softtabstop=2
+    \ shiftwidth=2
+    \ expandtab
+    \ textwidth=120
+augroup END
 
-au BufNewFile,BufRead *.js,*.json,*.jsx,*.html,*.css,*.yml,*.yaml,*.sql,*.proto
-    \ set tabstop=2 |
-    \ set softtabstop=2 |
-    \ set shiftwidth=2 |
-    \ set expandtab
+augroup TabSettingForPython
+  autocmd!
+  autocmd FileType python setlocal expandtab
+        \ textwidth=120
+augroup END
 
-autocmd BufNewFile,BufRead *.go
-    \ set tabstop=4 |
-    \ set softtabstop=4 |
-    \ set shiftwidth=4 |
-    \ set noexpandtab
+augroup TabSettingForGo
+  autocmd!
+  autocmd FileType go setlocal noexpandtab
+    \ textwidth=120
+augroup END
+
 
 " If one has a particular extension that one uses for binary files (such as exe,
 " bin, etc), you may find it helpful to automate the process with the following
@@ -139,8 +140,10 @@ if has('nvim')
 endif
 
 """" features of specific file/type of files
+
+" Python breakpoint
 au BufRead,BufNewFile *.py
-    \ nnoremap <leader>b oimport pdb; pdb.set_trace()  # XXX BREAKPOINT<Esc>
+  \ nnoremap <leader>b oimport pdb; pdb.set_trace()  # XXX BREAKPOINT<Esc>
 
 " source ~/.sword/vim/vundle.vimrc
 source ~/.sword/vim/plug.vimrc
