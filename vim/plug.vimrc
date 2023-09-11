@@ -279,6 +279,25 @@ set completeopt=noinsert,menuone,noselect
 " C/C++
 augroup CSettings
   autocmd!
+
+  if has('python')
+    autocmd filetype c,cpp map <C-K> :pyf /opt/homebrew/share/clang/clang-format.py<cr> |
+      \imap <C-K> <c-o>:pyf /opt/homebrew/share/clang/clang-format.py<cr>
+  elseif has('python3')
+    autocmd filetype c,cpp map <C-K> :py3f /opt/homebrew/share/clang/clang-format.py<cr> |
+      \imap <C-K> <c-o>:py3f /opt/homebrew/share/clang/clang-format.py<cr>
+  endif
+
+  function! FormatOnSave()
+    let l:formatdiff = 1
+    if has('python')
+      pyf /opt/homebrew/share/clang/clang-format.py
+    elseif has('python3')
+      py3f /opt/homebrew/share/clang/clang-format.py
+    endif
+  endfunction
+  autocmd BufWritePre *.c,*.h,*.cc,*.cpp call FormatOnSave()
+
   " set updatetime=300
   " au CursorHold *.c,*.h sil call CocActionAsync('highlight')
   au CursorHoldI *.c,*.h sil call CocActionAsync('showSignatureHelp')
