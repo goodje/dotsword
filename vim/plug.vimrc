@@ -161,6 +161,7 @@ else
   " let g:dracula_italic = 0 " without this, the italic texts will be highlited
   " colorscheme dracula
   " color dracula
+  set background=dark
   colorscheme gruvbox
   color gruvbox
   " highlight Normal ctermbg=None " using system background
