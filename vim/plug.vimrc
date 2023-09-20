@@ -146,6 +146,11 @@ Plug 'posva/vim-vue'
 " JS ORM framework
 Plug 'prisma/vim-prisma'
 
+" post install (yarn install | npm install) then load plugin only for editing supported files
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install --frozen-lockfile --production',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
+
 " Initialize plugin system
 call plug#end()
 
@@ -281,11 +286,11 @@ augroup CSettings
   autocmd!
 
   if has('python')
-    autocmd filetype c,cpp map <C-K> :pyf /opt/homebrew/share/clang/clang-format.py<cr> |
-      \imap <C-K> <c-o>:pyf /opt/homebrew/share/clang/clang-format.py<cr>
+    autocmd filetype c,cpp map <C-K> :pyf /usr/share/clang/clang-format-15/clang-format.py<cr> |
+      \imap <C-K> <c-o>:pyf /usr/share/clang/clang-format-15/clang-format.py<cr>
   elseif has('python3')
-    autocmd filetype c,cpp map <C-K> :py3f /opt/homebrew/share/clang/clang-format.py<cr> |
-      \imap <C-K> <c-o>:py3f /opt/homebrew/share/clang/clang-format.py<cr>
+    autocmd filetype c,cpp map <C-K> :py3f /usr/share/clang/clang-format-15/clang-format.py<cr> |
+      \imap <C-K> <c-o>:py3f /usr/share/clang/clang-format-15/clang-format.py<cr>
   endif
 
   function! FormatOnSave()
@@ -337,4 +342,8 @@ augroup CSettings
   nn <silent><buffer> <C-h> :call CocLocations('ccls','$ccls/navigate',{'direction':'U'})<cr>
 
 augroup END
+
+" for prettier plugin, it auto format after saving
+let g:prettier#autoformat = 1
+let g:prettier#autoformat_require_pragma = 0 " not matter if there is "@format" or "@prettier" tag in the file
 

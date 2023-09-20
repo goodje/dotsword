@@ -63,7 +63,7 @@ set fileformat=unix
 
 augroup TabSettingFor2SpacesAsTab
   autocmd!
-  autocmd FileType vim,javascript,vue,jsx,css,html,yaml,yml,sql,proto setlocal tabstop=2
+  autocmd FileType vim,javascript,typescript,vue,jsx,css,html,yaml,yml,sql,proto setlocal tabstop=2
     \ softtabstop=2
     \ shiftwidth=2
     \ expandtab
