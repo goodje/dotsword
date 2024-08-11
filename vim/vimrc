@@ -138,6 +138,12 @@ if has('nvim')
 
 endif
 
+" check if it's macos
+if has("mac")
+    let g:python3_host_prog = '/opt/homebrew/bin/python3'
+endif
+
+
 """" features of specific file/type of files
 au BufRead,BufNewFile *.py
     \ nnoremap <leader>b oimport pdb; pdb.set_trace()  # XXX BREAKPOINT<Esc>
