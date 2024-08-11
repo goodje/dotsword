@@ -54,3 +54,11 @@ if [[ -f $SWORD_CUSTOM_PATH/classified.shell.rc ]]; then
 fi
 
 # set -o vi
+
+# if command nvim exists
+if command -v nvim &> /dev/null; then
+    echo "nvim found, vi, vidiff, EDITOR set to nvim"
+    alias vi=nvim
+    alias vidiff='nvim -d'
+    export EDITOR=nvim
+fi

@@ -6,6 +6,9 @@
     name = goodje
     email = 1475199+goodje@users.noreply.github.com
 
+[url "git@github.com:"]
+     insteadOf = https://github.com/
+
 [diff]
 	tool = vimdiff
 
@@ -26,3 +29,6 @@
     dev = checkout dev
     co = checkout
     combine = "!combine() { git rebase -i HEAD~$1; }; combine"
+
+[init]
+	defaultBranch = master

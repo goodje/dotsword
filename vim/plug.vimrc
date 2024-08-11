@@ -1,5 +1,5 @@
 
-"?? python with virtualenv support
+"?? auto activate virtualenv, it requires pyvim or pynvim
 py3 << EOF
 import os
 import sys
@@ -93,6 +93,7 @@ else
 "  Plug 'roxma/nvim-yarp'
 "  Plug 'roxma/vim-hug-neovim-rpc'
 endif
+
 if has('pythonx')
     if has('python3')
         set pyxversion=3
