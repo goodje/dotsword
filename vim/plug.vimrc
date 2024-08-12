@@ -89,12 +89,12 @@ set omnifunc=syntaxcomplete#Complete
 " Plug 'Shougo/ddc.vim'
 " Plug 'vim-denops/denops.vim'
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 " Plug 'Valloric/YouCompleteMe'  " this plugin is very slow
 
 if has('nvim')
 "  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 else
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
   " Plug 'Shougo/deoplete.nvim'
 "  Plug 'roxma/nvim-yarp'
 "  Plug 'roxma/vim-hug-neovim-rpc'
@@ -174,11 +174,12 @@ let g:airline_theme='minimalist'
 set laststatus=2
 
 if has('nvim')
-    " nvim is not using nvim-tree instead of NERDTree
-    map	<C-n> :NvimTreeToggle<CR>
-    " focus in nvim-tree window and move the cusor to the file
-    " l for locate
-    map <leader>l :NvimTreeFindFile<cr>
+  " nvim is not using nvim-tree instead of NERDTree
+  map	<C-n> :NvimTreeToggle<CR>
+  " focus in nvim-tree window and move the cusor to the file
+  " l for locate
+  map <leader>l :NvimTreeFindFile<cr>
+
 else " vim
     """ nerdtree settings
     map <C-n> :NERDTreeToggle<CR>
@@ -217,8 +218,11 @@ let g:go_gopls_deep_completion = v:null
 """ deoplete.vim
 " let g:deoplete#enable_at_startup = 1
 
-""" COC
-source  ~/.sword/vim/coc.vimrc
+if !has('nvim')
+  """ COC
+  source  ~/.sword/vim/coc.vimrc
+endif
+
 
 """ ctrlp
 " let g:ctrlp_dotfiles = 1
