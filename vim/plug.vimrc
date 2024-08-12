@@ -33,8 +33,14 @@ Plug 'morhetz/gruvbox', { 'as': 'gruvbox' }
 " Plug 'jnurmine/Zenburn'
 " Plug 'altercation/vim-colors-solarized'
 
-" file navigator
-Plug 'scrooloose/nerdtree'
+" file navigator/explorer
+if has('nvim')
+  Plug 'nvim-tree/nvim-web-devicons' " optional
+  Plug 'kyazdani42/nvim-tree.lua'
+else
+  Plug 'preservim/nerdtree'
+endif
+
 " Plug 'jistr/vim-nerdtree-tabs'  " actually, vim provides tab feature
 
 " fzf also has the feature of finding files
@@ -167,17 +173,27 @@ let g:airline_theme='minimalist'
 " let g:airline#extensions#tabline#enabled = 1
 set laststatus=2
 
-""" nerdtree
-map <C-n> :NERDTreeToggle<CR>
-" open NERDTree automatically when vim starts up on opening a directory
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-" ignore files in NERDTree
-let NERDTreeIgnore=['.idea', '.DS_Store', '.swp$', '\.pyc$', '__pycache__', '\~$']
-let NERDTreeShowHidden=1
-" let g:NERDTreeWinPos = "right"
-" synchronise with opened file
-map <leader>r :NERDTreeFind<cr>
+if has('nvim')
+    " nvim is not using nvim-tree instead of NERDTree
+    map	<C-n> :NvimTreeToggle<CR>
+    " focus in nvim-tree window and move the cusor to the file
+    " l for locate
+    map <leader>l :NvimTreeFindFile<cr>
+else " vim
+    """ nerdtree settings
+    map <C-n> :NERDTreeToggle<CR>
+    " open NERDTree automatically when vim starts up on opening a directory
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+    " ignore files in NERDTree
+    let NERDTreeIgnore=['.idea', '.DS_Store', '.swp$', '\.pyc$', '__pycache__', '\~$']
+    let NERDTreeShowHidden=1
+    " let g:NERDTreeWinPos = "right"
+    " focus in NERDTree window and move the cusor to the file
+    map <leader>l :NERDTreeFind<cr>
+endif
+
+""" indentLine
 
 " bad white space
 au BufRead,BufNewFile *.py,*.pyw,*.c,*.h
