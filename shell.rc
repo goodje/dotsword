@@ -57,8 +57,7 @@ fi
 
 # if command nvim exists
 if command -v nvim &> /dev/null; then
-    echo "nvim found, vi, vidiff, EDITOR set to nvim"
-    alias vi=nvim
-    alias vidiff='nvim -d'
+    alias nv=nvim
+    alias nvdiff='nvim -d'
     export EDITOR=nvim
 fi

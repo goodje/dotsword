@@ -91,6 +91,9 @@ autocmd BufNewFile,BufRead *.go
     \ set shiftwidth=4 |
     \ set noexpandtab
 
+" customized shell rc file
+autocmd BufNewFile,BufRead shell.rc set filetype=zsh
+
 " If one has a particular extension that one uses for binary files (such as exe,
 " bin, etc), you may find it helpful to automate the process with the following
 " bit of autocmds for your <.vimrc>.  Change that "*.bin" to whatever
@@ -160,9 +163,13 @@ au BufRead,BufNewFile *.py
 " source ~/.sword/vim/vundle.vimrc
 source ~/.sword/vim/plug.vimrc
 
-let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
+"let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
+"let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
+
+" enable italics
+let &t_ZH="\e[3m"
+let &t_ZR="\e[23m"
 
 """" Line number
 " turn hybrid line numbers on
