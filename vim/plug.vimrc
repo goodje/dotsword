@@ -43,12 +43,25 @@ if has('nvim')
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
   Plug 'neovim/nvim-lspconfig'
+
+  " completion
+  Plug 'hrsh7th/cmp-nvim-lsp'
+  Plug 'hrsh7th/cmp-buffer'
+  Plug 'hrsh7th/cmp-path'
+  Plug 'hrsh7th/cmp-cmdline'
+  Plug 'hrsh7th/nvim-cmp'
+
+  " For vsnip users.
+  Plug 'hrsh7th/cmp-vsnip'
+  Plug 'hrsh7th/vim-vsnip'
+
 else
   Plug 'preservim/nerdtree'
 
- " fzf also has the feature of finding files
- Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
- Plug 'junegunn/fzf.vim'
+  " fzf also has the feature of finding files
+  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+  Plug 'junegunn/fzf.vim'
+
 endif
 
 " Plug 'jistr/vim-nerdtree-tabs'  " actually, vim provides tab feature
@@ -88,10 +101,6 @@ Plug 'shumphrey/fugitive-gitlab.vim'
 
 " Show file changes(based on VCS) using Vim its sign column
 Plug 'mhinz/vim-signify'
-
-"" autocomplete
-filetype plugin on
-set omnifunc=syntaxcomplete#Complete
 
 " Plug 'Shougo/ddc.vim'
 " Plug 'vim-denops/denops.vim'
@@ -158,7 +167,7 @@ Plug 'weirongxu/plantuml-previewer.vim'
 Plug 'posva/vim-vue'
 
 " JS ORM framework
-Plug 'prisma/vim-prisma'
+" Plug 'prisma/vim-prisma'
 
 " post install (yarn install | npm install) then load plugin only for editing supported files
 Plug 'prettier/vim-prettier', {
@@ -195,24 +204,29 @@ let g:airline_theme='minimalist'
 set laststatus=2
 
 if has('nvim')
-  " nvim is not using nvim-tree instead of NERDTree
+  " nvim is uses nvim-tree instead of NERDTree
   map	<C-n> :NvimTreeToggle<CR>
   " focus in nvim-tree window and move the cusor to the file
   " l for locate
   map <leader>l :NvimTreeFindFile<cr>
 
 else " vim
-    """ nerdtree settings
-    map <C-n> :NERDTreeToggle<CR>
-    " open NERDTree automatically when vim starts up on opening a directory
-    autocmd StdinReadPre * let s:std_in=1
-    autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-    " ignore files in NERDTree
-    let NERDTreeIgnore=['.idea', '.DS_Store', '.swp$', '\.pyc$', '__pycache__', '\~$']
-    let NERDTreeShowHidden=1
-    " let g:NERDTreeWinPos = "right"
-    " focus in NERDTree window and move the cusor to the file
-    map <leader>l :NERDTreeFind<cr>
+
+  "" autocomplete
+  filetype plugin on
+  set omnifunc=syntaxcomplete#Complete
+
+  """ nerdtree settings
+  map <C-n> :NERDTreeToggle<CR>
+  " open NERDTree automatically when vim starts up on opening a directory
+  autocmd StdinReadPre * let s:std_in=1
+  autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+  " ignore files in NERDTree
+  let NERDTreeIgnore=['.idea', '.DS_Store', '.swp$', '\.pyc$', '__pycache__', '\~$']
+  let NERDTreeShowHidden=1
+  " let g:NERDTreeWinPos = "right"
+  " focus in NERDTree window and move the cusor to the file
+  map <leader>l :NERDTreeFind<cr>
 endif
 
 """ indentLine
