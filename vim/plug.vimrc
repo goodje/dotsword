@@ -37,15 +37,22 @@ Plug 'morhetz/gruvbox', { 'as': 'gruvbox' }
 if has('nvim')
   Plug 'nvim-tree/nvim-web-devicons' " optional
   Plug 'kyazdani42/nvim-tree.lua'
+
+  Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
+
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+  Plug 'neovim/nvim-lspconfig'
 else
   Plug 'preservim/nerdtree'
+
+ " fzf also has the feature of finding files
+ Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+ Plug 'junegunn/fzf.vim'
 endif
 
 " Plug 'jistr/vim-nerdtree-tabs'  " actually, vim provides tab feature
 
-" fzf also has the feature of finding files
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
 " Plug 'ctrlpvim/ctrlp.vim' " find file
 
 " code search
@@ -162,6 +169,7 @@ else
   " let g:dracula_italic = 0 " without this, the italic texts will be highlited
   " colorscheme dracula
   " color dracula
+  let g:gruvbox_italic=1
   colorscheme gruvbox
   color gruvbox
   " highlight Normal ctermbg=None " using system background
@@ -236,14 +244,17 @@ if executable('ag')
     let g:ackprg = 'ag --vimgrep'
 endif
 
-""" fzf
-nnoremap <silent> <C-f> :Rg<CR>
-" fzf integrated ripgrep
-nnoremap <silent> <Leader>f :Files<CR>
-" Rg to not match files
-command! -bang -nargs=* Rg
-  \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
-nnoremap <silent> <Leader>b :Buffers<CR>
+if has('nvim')
+else
+  """ fzf
+  nnoremap <silent> <C-f> :Rg<CR>
+  " fzf integrated ripgrep
+  nnoremap <silent> <Leader>f :Files<CR>
+  " Rg to not match files
+  command! -bang -nargs=* Rg
+    \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
+  nnoremap <silent> <Leader>b :Buffers<CR>
+endif
 
 """ SimpylFold
 " let g:SimpylFold_docstring_preview = 1
