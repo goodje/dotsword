@@ -42,9 +42,10 @@ if has('nvim')
 
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
+  "" LSP
   Plug 'neovim/nvim-lspconfig'
 
-  " completion
+  "" completion
   Plug 'hrsh7th/cmp-nvim-lsp'
   Plug 'hrsh7th/cmp-buffer'
   Plug 'hrsh7th/cmp-path'
@@ -55,12 +56,19 @@ if has('nvim')
   Plug 'hrsh7th/cmp-vsnip'
   Plug 'hrsh7th/vim-vsnip'
 
+  "" Golang
+  Plug 'ray-x/go.nvim'
+  Plug 'ray-x/guihua.lua' " recommended if need floating window support
+
 else
   Plug 'preservim/nerdtree'
 
-  " fzf also has the feature of finding files
+  "" fzf also has the feature of finding files
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
+
+  "" Golang
+  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 endif
 
@@ -140,9 +148,6 @@ Plug 'pedrohdz/vim-yaml-folds'
 Plug 'vim-scripts/indentpython.vim'
 " lint
 Plug 'nvie/vim-flake8'
-
-"" Golang
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 "" UML
 Plug 'aklt/plantuml-syntax'
