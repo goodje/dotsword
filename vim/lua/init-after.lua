@@ -86,6 +86,12 @@ vim.keymap.set("n", "<leader>f", require('fzf-lua').files, { desc = "Fzf Files" 
 vim.keymap.set("n", "<C-f>", require('fzf-lua').live_grep, { desc = "Fzf Search" })
 vim.keymap.set("n", "<leader>t", require('fzf-lua').tags, { desc = "Fzf Tags" })
 
+-- Set up LSP
+require("mason").setup() -- williamboman/mason.nvim
+require("mason-lspconfig").setup{
+  ensure_installed = { "lua_ls", "tsserver", "pyright", "postgres_lsp", "gopls", "ccls", "vuelsls" },
+}
+
 -- Set up nvim-cmp.
 local cmp = require'cmp'
 
@@ -152,10 +158,13 @@ cmp.setup.cmdline(':', {
   matching = { disallow_symbol_nonprefix_matching = false }
 })
 
--- Set up lspconfig.
+
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
--- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
+
+lspconfig.lua_ls.setup {
+  capabilities = capabilities
+}
 lspconfig.tsserver.setup {
   capabilities = capabilities
 }
@@ -168,9 +177,9 @@ lspconfig.postgres_lsp.setup {
 lspconfig.gopls.setup {
   capabilities = capabilities
 }
-lspconfig.gradle_ls.setup {
-  capabilities = capabilities
-}
+-- lspconfig.gradle_ls.setup {
+--   capabilities = capabilities
+-- }
 lspconfig.ccls.setup {
   capabilities = capabilities
 }
@@ -179,22 +188,71 @@ lspconfig.vuels.setup {
 }
 
 -- Golang
--- local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
--- vim.api.nvim_create_autocmd("BufWritePre", {
---   pattern = "*.go",
---   callback = function()
---    require('go.format').goimports()
---   end,
---   group = format_sync_grp,
--- })
--- 
--- local format_sync_grp = vim.api.nvim_create_augroup("goimports", {})
--- vim.api.nvim_create_autocmd("BufWritePre", {
---   pattern = "*.go",
---   callback = function()
---    require('go.format').goimports()
---   end,
---   group = format_sync_grp,
--- })
--- 
--- require('go').setup()
+ local format_sync_grp = vim.api.nvim_create_augroup("GoFormat", {})
+ vim.api.nvim_create_autocmd("BufWritePre", {
+   pattern = "*.go",
+   callback = function()
+    require('go.format').goimports()
+   end,
+   group = format_sync_grp,
+ })
+
+ local format_sync_grp = vim.api.nvim_create_augroup("goimports", {})
+ vim.api.nvim_create_autocmd("BufWritePre", {
+   pattern = "*.go",
+   callback = function()
+    require('go.format').goimports()
+   end,
+   group = format_sync_grp,
+ })
+
+ require('go').setup()
+
+ -- lewis6991/gitsigns.nvim
+ require('gitsigns').setup{
+  on_attach = function(bufnr)
+    local gitsigns = require('gitsigns')
+
+    local function map(mode, l, r, opts)
+      opts = opts or {}
+      opts.buffer = bufnr
+      vim.keymap.set(mode, l, r, opts)
+    end
+
+    -- Navigation
+    map('n', ']c', function()
+      if vim.wo.diff then
+        vim.cmd.normal({']c', bang = true})
+      else
+        gitsigns.nav_hunk('next')
+      end
+    end)
+
+    map('n', '[c', function()
+      if vim.wo.diff then
+        vim.cmd.normal({'[c', bang = true})
+      else
+        gitsigns.nav_hunk('prev')
+      end
+    end)
+
+    -- Actions
+    map('n', '<leader>hs', gitsigns.stage_hunk)
+    map('n', '<leader>hr', gitsigns.reset_hunk)
+    map('v', '<leader>hs', function() gitsigns.stage_hunk {vim.fn.line('.'), vim.fn.line('v')} end)
+    map('v', '<leader>hr', function() gitsigns.reset_hunk {vim.fn.line('.'), vim.fn.line('v')} end)
+    map('n', '<leader>hS', gitsigns.stage_buffer)
+    map('n', '<leader>hu', gitsigns.undo_stage_hunk)
+    map('n', '<leader>hR', gitsigns.reset_buffer)
+    map('n', '<leader>hp', gitsigns.preview_hunk)
+    map('n', '<leader>hb', function() gitsigns.blame_line{full=true} end)
+    map('n', '<leader>tb', gitsigns.toggle_current_line_blame)
+    map('n', '<leader>hd', gitsigns.diffthis)
+    map('n', '<leader>hD', function() gitsigns.diffthis('~') end)
+    map('n', '<leader>td', gitsigns.toggle_deleted)
+
+    -- Text object
+    map({'o', 'x'}, 'ih', ':<C-U>Gitsigns select_hunk<CR>')
+  end
+}
+
