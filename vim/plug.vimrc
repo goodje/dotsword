@@ -154,6 +154,17 @@ Plug 'weirongxu/plantuml-previewer.vim'
 " Plug 'roxma/nvim-yarp'
 " Plug 'phpactor/ncm2-phpactor'
 
+" Javascript(js)/Typescript(ts)
+Plug 'posva/vim-vue'
+
+" JS ORM framework
+Plug 'prisma/vim-prisma'
+
+" post install (yarn install | npm install) then load plugin only for editing supported files
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install --frozen-lockfile --production',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
+
 " Initialize plugin system
 call plug#end()
 
@@ -170,6 +181,8 @@ else
   " colorscheme dracula
   " color dracula
   let g:gruvbox_italic=1
+  let g:gruvbox_contrast_dark='hard'
+  set background=dark
   colorscheme gruvbox
   color gruvbox
   " highlight Normal ctermbg=None " using system background
@@ -278,20 +291,91 @@ let g:go_highlight_function_calls = 1
 let g:go_highlight_extra_types = 1
 let g:go_highlight_operators = 1
 
-" most used
-nmap <silent> gi :GoImplements<cr>
-nmap <silent> gc :GoCallers<cr>
-nmap <silent> gr :GoReferrers<cr>
-
 " Status line types/signatures
 let g:go_auto_type_info = 1
-
-" autocomplete prompt to appear automatically whenever you press the dot (.)
-" use Ctrl-n or Ctrl-p to select
-au filetype go inoremap <buffer> . .<C-x><C-o>
 
 " Opening Documentation in a Popup, use K to trigger it
 let g:go_doc_popup_window = 1
 
+augroup GoSettings
+  " most used
+  " nmap <silent> gi :GoImplements<cr>
+  " nmap <silent> gr :GoReferrers<cr>
+  autocmd filetype go nmap <silent> gc :GoCallers<cr>
+
+  " autocomplete prompt to appear automatically whenever you press the dot (.)
+  " use Ctrl-n or Ctrl-p to select
+  autocmd filetype go inoremap <buffer> . .<C-x><C-o>
+
+augroup END
+
 " autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
+
+
+" C/C++
+augroup CSettings
+  autocmd!
+
+  if has('python')
+    autocmd filetype c,cpp map <C-K> :pyf /usr/share/clang/clang-format-15/clang-format.py<cr> |
+      \imap <C-K> <c-o>:pyf /usr/share/clang/clang-format-15/clang-format.py<cr>
+  elseif has('python3')
+    autocmd filetype c,cpp map <C-K> :py3f /usr/share/clang/clang-format-15/clang-format.py<cr> |
+      \imap <C-K> <c-o>:py3f /usr/share/clang/clang-format-15/clang-format.py<cr>
+  endif
+
+  function! FormatOnSave()
+    let l:formatdiff = 1
+    if has('python')
+      pyf /opt/homebrew/share/clang/clang-format.py
+    elseif has('python3')
+      py3f /opt/homebrew/share/clang/clang-format.py
+    endif
+  endfunction
+  autocmd BufWritePre *.c,*.h,*.cc,*.cpp call FormatOnSave()
+
+  " set updatetime=300
+  " au CursorHold *.c,*.h sil call CocActionAsync('highlight')
+  au CursorHoldI *.c,*.h sil call CocActionAsync('showSignatureHelp')
+
+
+  " bases
+  nn <silent> xb :call CocLocations('ccls','$ccls/inheritance')<cr>
+  " bases of up to 3 levels
+  nn <silent> xB :call CocLocations('ccls','$ccls/inheritance',{'levels':3})<cr>
+  " derived
+  nn <silent> xd :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true})<cr>
+  " derived of up to 3 levels
+  nn <silent> xD :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true,'levels':3})<cr>
+
+  " caller
+  nn <silent> xc :call CocLocations('ccls','$ccls/call')<cr>
+  " callee
+  nn <silent> xC :call CocLocations('ccls','$ccls/call',{'callee':v:true})<cr>
+
+  " $ccls/member
+  " member variables / variables in a namespace
+  nn <silent> xm :call CocLocations('ccls','$ccls/member')<cr>
+  " member functions / functions in a namespace
+  nn <silent> xf :call CocLocations('ccls','$ccls/member',{'kind':3})<cr>
+  " nested classes / types in a namespace
+  nn <silent> xs :call CocLocations('ccls','$ccls/member',{'kind':2})<cr>
+
+  nmap <silent> xt <Plug>(coc-type-definition)<cr>
+  nn <silent> xv :call CocLocations('ccls','$ccls/vars')<cr>
+  nn <silent> xV :call CocLocations('ccls','$ccls/vars',{'kind':1})<cr>
+
+  nn xx x
+
+  nn <silent><buffer> <C-l> :call CocLocations('ccls','$ccls/navigate',{'direction':'D'})<cr>
+  nn <silent><buffer> <C-k> :call CocLocations('ccls','$ccls/navigate',{'direction':'L'})<cr>
+  nn <silent><buffer> <C-j> :call CocLocations('ccls','$ccls/navigate',{'direction':'R'})<cr>
+  nn <silent><buffer> <C-h> :call CocLocations('ccls','$ccls/navigate',{'direction':'U'})<cr>
+
+augroup END
+
+" for prettier plugin, it auto format after saving
+let g:prettier#autoformat = 1
+let g:prettier#autoformat_require_pragma = 0 " not matter if there is "@format" or "@prettier" tag in the file
+
