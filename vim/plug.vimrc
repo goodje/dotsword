@@ -43,6 +43,9 @@ if has('nvim')
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
   "" LSP
+  " Manage LSP servers, DAP servers, linters and formatters
+  Plug 'williamboman/mason.nvim'
+  Plug 'williamboman/mason-lspconfig.nvim'
   Plug 'neovim/nvim-lspconfig'
 
   "" completion
@@ -60,6 +63,9 @@ if has('nvim')
   Plug 'ray-x/go.nvim'
   Plug 'ray-x/guihua.lua' " recommended if need floating window support
 
+  "" Git signs similar to but more powerful than vim-fugitive
+  Plug 'lewis6991/gitsigns.nvim'
+
 else
   Plug 'preservim/nerdtree'
 
@@ -69,6 +75,18 @@ else
 
   "" Golang
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+  " A Git wrapper
+  Plug 'tpope/vim-fugitive'
+
+  " fugitive plugin for Growser
+  " Github
+  Plug 'tpope/vim-rhubarb'
+  " Gitlab
+  Plug 'shumphrey/fugitive-gitlab.vim'
+
+  " Show file changes(based on VCS) using Vim its sign column
+  Plug 'mhinz/vim-signify'
 
 endif
 
@@ -98,17 +116,6 @@ Plug 'preservim/nerdcommenter'
 Plug 'preservim/tagbar'
 
 " Plug 'vim-syntastic/syntastic'  " Syntax checking hacks for vim
-" A Git wrapper
-Plug 'tpope/vim-fugitive'
-
-" fugitive plugin for Growser
-" Github
-Plug 'tpope/vim-rhubarb'
-" Gitlab
-Plug 'shumphrey/fugitive-gitlab.vim'
-
-" Show file changes(based on VCS) using Vim its sign column
-Plug 'mhinz/vim-signify'
 
 " Plug 'Shougo/ddc.vim'
 " Plug 'vim-denops/denops.vim'
