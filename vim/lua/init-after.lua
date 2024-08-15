@@ -4,7 +4,7 @@
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all" (the listed parsers MUST always be installed)
   ensure_installed = {
-    "c", "go", "gomod", "gosum", "lua", "vim", "vimdoc", "query", "markdown",
+    "c", "go", "gomod", "gosum", "vim", "vimdoc", "query", "markdown",
     "markdown_inline", "gitignore", "json", "yaml", "toml", "html", "css",
     "javascript", "typescript", "vue", "python", "rust", "java", "php",
     "cpp", "cmake", "lua", "nginx", "dockerfile", "bash", "sql",
@@ -64,7 +64,6 @@ local function nvim_tree_on_attach(bufnr)
   vim.keymap.set('n', '?',     api.tree.toggle_help,                  opts('Help'))
 end
 
-
 require("nvim-tree").setup({
   sort = {
     sorter = "case_sensitive",
@@ -73,13 +72,21 @@ require("nvim-tree").setup({
     width = 30,
   },
   renderer = {
+    -- show as one folder when middle folders are empty
     group_empty = true,
   },
   filters = {
-    dotfiles = true,
+    dotfiles = false, -- show dotfiles
   },
   on_attach = nvim_tree_on_attach,
 })
+
+require("lualine").setup {
+  options = {
+    -- make sure theme gruvbox-material is installed
+    theme = 'gruvbox-material'
+  }
+}
 
 -- fzf.lua
 vim.keymap.set("n", "<leader>f", require('fzf-lua').files, { desc = "Fzf Files" })
@@ -89,10 +96,11 @@ vim.keymap.set("n", "<leader>t", require('fzf-lua').tags, { desc = "Fzf Tags" })
 -- Set up LSP
 require("mason").setup() -- williamboman/mason.nvim
 require("mason-lspconfig").setup{
-  ensure_installed = { "lua_ls", "tsserver", "pyright", "postgres_lsp", "gopls", "ccls", "vuelsls" },
+  ensure_installed = { "tsserver", "pyright", "gopls", "vuels" },
 }
 
--- Set up nvim-cmp.
+-- autocomplete
+-- Set up nvim-cmp
 local cmp = require'cmp'
 
 cmp.setup({
@@ -162,9 +170,6 @@ cmp.setup.cmdline(':', {
 local lspconfig = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-lspconfig.lua_ls.setup {
-  capabilities = capabilities
-}
 lspconfig.tsserver.setup {
   capabilities = capabilities
 }
