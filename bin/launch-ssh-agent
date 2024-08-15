@@ -1,0 +1,27 @@
+#!env bash
+echo 1
+
+pgrep ssh-agent
+
+if [[ $? == 0 ]]; then
+    echo "ssh-agent running already"
+    exit
+fi
+
+if [[ ! -e ~/.zshrc ]]; then
+    echo "~/.zshrc not exists"
+    exit
+fi
+
+# start ssh-agent
+
+pcregrep -M '# ssh-agent(\s|.)*# end ssh-agent' ~/.zshrc
+
+if [[ $? != 0 ]]; then
+    # not found, insert
+else
+    # found, replace
+fi
+
+
+

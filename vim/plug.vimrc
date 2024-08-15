@@ -64,6 +64,13 @@ if has('nvim')
   Plug 'hrsh7th/cmp-vsnip'
   Plug 'hrsh7th/vim-vsnip'
 
+  " indentation guides
+  Plug 'lukas-reineke/indent-blankline.nvim'
+
+  " fold
+  Plug 'kevinhwang91/promise-async'
+  Plug 'kevinhwang91/nvim-ufo'
+
   "" Golang
   Plug 'ray-x/go.nvim'
   Plug 'ray-x/guihua.lua' " recommended if need floating window support
@@ -71,7 +78,7 @@ if has('nvim')
   "" Git signs similar to but more powerful than vim-fugitive
   Plug 'lewis6991/gitsigns.nvim'
 
-else
+else " vim
 
   " status bar
   Plug 'vim-airline/vim-airline'
@@ -82,6 +89,14 @@ else
   "" fzf also has the feature of finding files
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
+
+  " A vim plugin to display the indention levels with thin vertical lines
+  Plug 'Yggdroot/indentLine'
+
+  Plug 'tmhedberg/SimpylFold' " too slow
+
+  " yaml fold
+  Plug 'pedrohdz/vim-yaml-folds'
 
   "" Golang
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
@@ -116,9 +131,6 @@ endif
 "" edit
 " Highlights whitespace at the end of lines, only in modifiable buffers
 Plug 'bitc/vim-bad-whitespace'
-Plug 'tmhedberg/SimpylFold' " too slow
-" A vim plugin to display the indention levels with thin vertical lines
-Plug 'Yggdroot/indentLine'
 
 " to comment a line or block
 Plug 'preservim/nerdcommenter'
@@ -154,10 +166,6 @@ Plug 'github/copilot.vim'
 
 " distraction-free apperence, togger by :Goyo, :Goyo!(trun off)
 " Plug 'junegunn/goyo.vim'
-
-"" yaml
-" yaml fold
-Plug 'pedrohdz/vim-yaml-folds'
 
 "" Python
 " to match indentation more closely what is suggested in PEP 8
@@ -230,7 +238,7 @@ let g:gruvbox_material_enable_bold = 0
 " only wors for nvim for now
 let g:gruvbox_material_dim_inactive_windows = 1
 let g:gruvbox_material_colors_override = {
-      \ 'bg_dim':              ['#1f2223',   '236'],
+      \ 'bg_dim': ['#1f2223', '236'],
       \}
 colorscheme gruvbox-material
 
@@ -392,43 +400,44 @@ augroup CSettings
   endfunction
   autocmd BufWritePre *.c,*.h,*.cc,*.cpp call FormatOnSave()
 
-  " set updatetime=300
-  " au CursorHold *.c,*.h sil call CocActionAsync('highlight')
-  au CursorHoldI *.c,*.h sil call CocActionAsync('showSignatureHelp')
+  if has('nvim')
+    " set updatetime=300
+    " au CursorHold *.c,*.h sil call CocActionAsync('highlight')
+    au CursorHoldI *.c,*.h sil call CocActionAsync('showSignatureHelp')
 
+    " bases
+    nn <silent> xb :call CocLocations('ccls','$ccls/inheritance')<cr>
+    " bases of up to 3 levels
+    nn <silent> xB :call CocLocations('ccls','$ccls/inheritance',{'levels':3})<cr>
+    " derived
+    nn <silent> xd :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true})<cr>
+    " derived of up to 3 levels
+    nn <silent> xD :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true,'levels':3})<cr>
 
-  " bases
-  nn <silent> xb :call CocLocations('ccls','$ccls/inheritance')<cr>
-  " bases of up to 3 levels
-  nn <silent> xB :call CocLocations('ccls','$ccls/inheritance',{'levels':3})<cr>
-  " derived
-  nn <silent> xd :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true})<cr>
-  " derived of up to 3 levels
-  nn <silent> xD :call CocLocations('ccls','$ccls/inheritance',{'derived':v:true,'levels':3})<cr>
+    " caller
+    nn <silent> xc :call CocLocations('ccls','$ccls/call')<cr>
+    " callee
+    nn <silent> xC :call CocLocations('ccls','$ccls/call',{'callee':v:true})<cr>
 
-  " caller
-  nn <silent> xc :call CocLocations('ccls','$ccls/call')<cr>
-  " callee
-  nn <silent> xC :call CocLocations('ccls','$ccls/call',{'callee':v:true})<cr>
+    " $ccls/member
+    " member variables / variables in a namespace
+    nn <silent> xm :call CocLocations('ccls','$ccls/member')<cr>
+    " member functions / functions in a namespace
+    nn <silent> xf :call CocLocations('ccls','$ccls/member',{'kind':3})<cr>
+    " nested classes / types in a namespace
+    nn <silent> xs :call CocLocations('ccls','$ccls/member',{'kind':2})<cr>
 
-  " $ccls/member
-  " member variables / variables in a namespace
-  nn <silent> xm :call CocLocations('ccls','$ccls/member')<cr>
-  " member functions / functions in a namespace
-  nn <silent> xf :call CocLocations('ccls','$ccls/member',{'kind':3})<cr>
-  " nested classes / types in a namespace
-  nn <silent> xs :call CocLocations('ccls','$ccls/member',{'kind':2})<cr>
+    nmap <silent> xt <Plug>(coc-type-definition)<cr>
+    nn <silent> xv :call CocLocations('ccls','$ccls/vars')<cr>
+    nn <silent> xV :call CocLocations('ccls','$ccls/vars',{'kind':1})<cr>
 
-  nmap <silent> xt <Plug>(coc-type-definition)<cr>
-  nn <silent> xv :call CocLocations('ccls','$ccls/vars')<cr>
-  nn <silent> xV :call CocLocations('ccls','$ccls/vars',{'kind':1})<cr>
+    nn xx x
 
-  nn xx x
-
-  nn <silent><buffer> <C-l> :call CocLocations('ccls','$ccls/navigate',{'direction':'D'})<cr>
-  nn <silent><buffer> <C-k> :call CocLocations('ccls','$ccls/navigate',{'direction':'L'})<cr>
-  nn <silent><buffer> <C-j> :call CocLocations('ccls','$ccls/navigate',{'direction':'R'})<cr>
-  nn <silent><buffer> <C-h> :call CocLocations('ccls','$ccls/navigate',{'direction':'U'})<cr>
+    nn <silent><buffer> <C-l> :call CocLocations('ccls','$ccls/navigate',{'direction':'D'})<cr>
+    nn <silent><buffer> <C-k> :call CocLocations('ccls','$ccls/navigate',{'direction':'L'})<cr>
+    nn <silent><buffer> <C-j> :call CocLocations('ccls','$ccls/navigate',{'direction':'R'})<cr>
+    nn <silent><buffer> <C-h> :call CocLocations('ccls','$ccls/navigate',{'direction':'U'})<cr>
+  endif
 
 augroup END
 
