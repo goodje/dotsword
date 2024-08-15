@@ -23,23 +23,28 @@ call plug#begin('~/.vim/plugged')
 Plug 'mhinz/vim-startify'
 
 "" apperence
-" status bar
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 
 " color scheme
 " Plug 'dracula/vim', { 'as': 'dracula' }
-Plug 'morhetz/gruvbox', { 'as': 'gruvbox' }
+" Plug 'morhetz/gruvbox', { 'as': 'gruvbox' }
+Plug 'sainnhe/gruvbox-material'
 " Plug 'jnurmine/Zenburn'
 " Plug 'altercation/vim-colors-solarized'
 
 " file navigator/explorer
 if has('nvim')
-  Plug 'nvim-tree/nvim-web-devicons' " optional
+  Plug 'nvim-tree/nvim-web-devicons' " graphic font, optional
+
+  " status bar
+  Plug 'nvim-lualine/lualine.nvim'
+
+  " file explorer
   Plug 'kyazdani42/nvim-tree.lua'
 
+  " search for files, buffers, lines, etc
   Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
 
+  " highlighting
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
   "" LSP
@@ -67,6 +72,11 @@ if has('nvim')
   Plug 'lewis6991/gitsigns.nvim'
 
 else
+
+  " status bar
+  Plug 'vim-airline/vim-airline'
+  Plug 'vim-airline/vim-airline-themes'
+
   Plug 'preservim/nerdtree'
 
   "" fzf also has the feature of finding files
@@ -193,27 +203,38 @@ call plug#end()
 " Plugin configurations
 
 " colorscheme
-if has('gui_running')
-  set background=dark
-  colorscheme solarized
-else
-  " colorscheme zenburn
-  " let g:dracula_italic = 0 " without this, the italic texts will be highlited
-  " colorscheme dracula
-  " color dracula
-  let g:gruvbox_italic=1
-  let g:gruvbox_contrast_dark='hard'
-  set background=dark
-  colorscheme gruvbox
-  color gruvbox
-  " highlight Normal ctermbg=None " using system background
-endif
+" if has('gui_running')
+" endif
 
-""" Airline
-let g:airline_theme='minimalist'
-" alternative themes: molokai, deus, monochrome
-" let g:airline#extensions#tabline#enabled = 1
-set laststatus=2
+" colorscheme zenburn
+" let g:dracula_italic = 0 " without this, the italic texts will be highlited
+" colorscheme dracula
+" color dracula
+
+" theme gruvbox
+" let g:gruvbox_italic=1
+" let g:gruvbox_contrast_dark='hard'
+" color gruvbox
+" colorscheme gruvbox
+
+" theme gruvbox-material
+set background=dark
+" available options: 'hard', 'medium', 'soft'
+let g:gruvbox_material_background = 'hard'
+" available options: 'material', 'mix', 'original'
+let g:gruvbox_material_foreground	= 'material'
+let g:gruvbox_material_better_performance = 1
+let g:gruvbox_material_enable_italic = 1
+let g:gruvbox_material_disable_italic_comment = 0
+let g:gruvbox_material_enable_bold = 0
+" only wors for nvim for now
+let g:gruvbox_material_dim_inactive_windows = 1
+let g:gruvbox_material_colors_override = {
+      \ 'bg_dim':              ['#1f2223',   '236'],
+      \}
+colorscheme gruvbox-material
+
+" highlight Normal ctermbg=None " using system background
 
 if has('nvim')
   " nvim is uses nvim-tree instead of NERDTree
@@ -239,6 +260,16 @@ else " vim
   " let g:NERDTreeWinPos = "right"
   " focus in NERDTree window and move the cusor to the file
   map <leader>l :NERDTreeFind<cr>
+
+  """ Airline, we use Lualine in nvim
+  " let g:airline_theme='minimalist'
+  " alternative themes: molokai, deus, monochrome
+  " let g:airline#extensions#tabline#enabled = 1
+  set laststatus=2
+
+  " make sure gruvbox_material is installed
+  let g:airline_theme = 'gruvbox_material'
+
 endif
 
 """ indentLine
