@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# rename names of files in a given path as the first parameter to the files'
+# modification date time in YYYYMMDD.HHMMSS
+
+# Check if folder path is provided as parameter
+if [ -z "$1" ]
+then
+    echo "Please provide a folder path as a parameter."
+    exit 1
+fi
+
+# Set the folder path
+folder_path="$1"
+
+# Loop through all files in the folder
+for file in "$folder_path"/*
+do
+    # Check if file exists and is not a directory
+    if [ -f "$file" ]
+    then
+        # Get the modified time of the file
+        mod_time=$(stat -f "%m" "$file")
+        mod_time_str=$(date -r "$mod_time" +"%Y%m%d.%H%M%S")
+
+        org_file_name=$(basename "$file")
+
+        # Set the new file name
+        new_file_name="$mod_time_str.$org_file_name"
+
+        # Confirm before renaming
+        read -p "rename $org_file_name to $new_file_name, sure? (y/n) " answer
+
+        if [ "$answer" == "y" ]
+        then
+            # Rename the file
+            mv "$file" "$folder_path/$new_file_name"
+        else
+            echo "File not renamed."
+        fi
+    fi
+done
+
