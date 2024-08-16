@@ -145,7 +145,7 @@ cmp.setup({
     { name = 'buffer' },
   })
 )
-equire("cmp_git").setup() ]]-- 
+require("cmp_git").setup() ]]
 
 -- Use buffer source for `/` and `?` (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline({ '/', '?' }, {
@@ -207,7 +207,14 @@ local lspconfig = require('lspconfig')
 --     })
 -- end
 
-map('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
+-- nvim-lspconfih
+vim.keymap.set('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>')
+vim.keymap.set('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>')
+vim.keymap.set('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>')
+vim.keymap.set('n', 'gc', '<cmd>lua vim.lsp.buf.incoming_calls()<CR>')
+vim.keymap.set('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>')
+vim.keymap.set('n', ',r', '<cmd>lua vim.lsp.buf.rename()<CR>')
+vim.keymap.set('n', ',a', '<cmd>lua vim.lsp.buf.code_action()<CR>')
 
 ---- nvim-ufo folding
 vim.o.foldcolumn = '1' -- '0' is not bad
