@@ -332,6 +332,18 @@ else
   command! -bang -nargs=* Rg
     \ call fzf#vim#grep("rg --column --line-number --no-heading --color=always --smart-case ".shellescape(<q-args>), 1, fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
   nnoremap <silent> <Leader>b :Buffers<CR>
+
+  augroup GoSettings
+    " most used
+    " nmap <silent> gi :GoImplements<cr>
+    " nmap <silent> gr :GoReferrers<cr>
+    autocmd filetype go nmap <silent> gc :GoCallers<cr>
+
+    " autocomplete prompt to appear automatically whenever you press the dot (.)
+    " use Ctrl-n or Ctrl-p to select
+    autocmd filetype go inoremap <buffer> . .<C-x><C-o>
+  augroup END
+
 endif
 
 """ SimpylFold
@@ -347,8 +359,6 @@ endif
 " source ~/.sword/vim/pymode.vimrc
 "
 
-"" vim-go
-
 " Go syntax highlighting
 let g:go_highlight_fields = 1
 let g:go_highlight_functions = 1
@@ -361,18 +371,6 @@ let g:go_auto_type_info = 1
 
 " Opening Documentation in a Popup, use K to trigger it
 let g:go_doc_popup_window = 1
-
-augroup GoSettings
-  " most used
-  " nmap <silent> gi :GoImplements<cr>
-  " nmap <silent> gr :GoReferrers<cr>
-  autocmd filetype go nmap <silent> gc :GoCallers<cr>
-
-  " autocomplete prompt to appear automatically whenever you press the dot (.)
-  " use Ctrl-n or Ctrl-p to select
-  autocmd filetype go inoremap <buffer> . .<C-x><C-o>
-
-augroup END
 
 " autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
