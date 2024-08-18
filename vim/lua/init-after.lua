@@ -1,7 +1,7 @@
 -- this file is loaded after the plugins are loaded
 
 -- nvim treesitter
-require'nvim-treesitter.configs'.setup {
+require'nvim-treesitter.configs'.setup{
   -- A list of parser names, or "all" (the listed parsers MUST always be installed)
   ensure_installed = {
     "c", "go", "gomod", "gosum", "vim", "vimdoc", "query", "markdown",
@@ -64,7 +64,7 @@ local function nvim_tree_on_attach(bufnr)
   vim.keymap.set('n', '?',     api.tree.toggle_help,                  opts('Help'))
 end
 
-require("nvim-tree").setup({
+require("nvim-tree").setup{
   sort = {
     sorter = "case_sensitive",
   },
@@ -79,9 +79,9 @@ require("nvim-tree").setup({
     dotfiles = false, -- show dotfiles
   },
   on_attach = nvim_tree_on_attach,
-})
+}
 
-require("lualine").setup {
+require("lualine").setup{
   options = {
     -- make sure theme gruvbox-material is installed
     theme = 'gruvbox-material'
@@ -94,16 +94,19 @@ vim.keymap.set("n", "<C-f>", require('fzf-lua').live_grep, { desc = "Fzf Search"
 vim.keymap.set("n", "<leader>t", require('fzf-lua').tags, { desc = "Fzf Tags" })
 
 -- Set up LSP
+-- The order of setup matters 1. mason, 2. mason-lspconfig, 3. language servers via lspconfig
 require("mason").setup() -- williamboman/mason.nvim
 require("mason-lspconfig").setup{
-  ensure_installed = { "tsserver", "pyright", "gopls", "vuels" },
+  ensure_installed = { "tsserver", "pyright", "gopls", "vuels",
+	"yamlls", "sqlls", "html", "dockerls", "docker_compose_language_service" },
 }
+-- mason-lspconfig doesn't support ccls yet
 
 -- autocomplete
 -- Set up nvim-cmp
 local cmp = require'cmp'
 
-cmp.setup({
+cmp.setup{
   snippet = {
     -- REQUIRED - you must specify a snippet engine
     expand = function(args)
@@ -134,7 +137,7 @@ cmp.setup({
   }, {
     { name = 'buffer' },
   })
-})
+}
 
 -- To use git you need to install the plugin petertriho/cmp-git and uncomment lines below
 -- Set configuration for specific filetype.
@@ -178,27 +181,82 @@ capabilities.textDocument.foldingRange = {
 }
 
 local lspconfig = require('lspconfig')
- lspconfig.tsserver.setup {
-   capabilities = capabilities
- }
- lspconfig.pyright.setup {
-   capabilities = capabilities
- }
- lspconfig.postgres_lsp.setup {
-   capabilities = capabilities
- }
- lspconfig.gopls.setup {
-   capabilities = capabilities
- }
- -- lspconfig.gradle_ls.setup {
- --   capabilities = capabilities
- -- }
- lspconfig.ccls.setup {
-   capabilities = capabilities
- }
- lspconfig.vuels.setup {
-   capabilities = capabilities
- }
+lspconfig.tsserver.setup{
+  capabilities = capabilities
+}
+lspconfig.pyright.setup{
+  capabilities = capabilities
+}
+lspconfig.postgres_lsp.setup{
+  capabilities = capabilities
+}
+lspconfig.gopls.setup{
+  capabilities = capabilities
+}
+-- lspconfig.gradle_ls.setup{
+--   capabilities = capabilities
+-- }
+lspconfig.vuels.setup{
+  capabilities = capabilities
+}
+
+lspconfig.ccls.setup{
+  capabilities = capabilities,
+  init_options = {
+    compilationDatabaseDirectory = "build";
+    index = {
+      threads = 0;
+    };
+    clang = {
+      excludeArgs = { "-frounding-math"} ;
+    };
+	cache = {
+      directory = ".ccls-cache";
+    };
+  }
+}
+
+lspconfig.yamlls.setup{
+  capabilities = capabilities,
+  settings = {
+    yaml = {
+      schemas = {
+        ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+        ["https://run.googleapis.com/$discovery/rest?version=v1"] = "/.gcr/*-service.yml",
+      },
+    },
+  }
+}
+
+-- don't get confused with sqls(https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#sqlls)
+-- refer to https://github.com/joe-re/sql-language-server
+lspconfig.sqlls.setup{
+  capabilities = capabilities,
+}
+
+lspconfig.dockerls.setup {
+  capabilities = capabilities,
+  settings = {
+    docker = {
+      languageserver = {
+        formatter = {
+  	      ignoreMultilineInstructions = false,
+  	    },
+      },
+    }
+  }
+}
+
+lspconfig.docker_compose_language_service.setup{}
+
+--Enable (broadcasting) snippet capability for completion
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+
+lspconfig.html.setup {
+  capabilities = capabilities,
+}
+
+
 
 -- local language_servers = require("lspconfig").util.available_servers() -- or list servers manually like {'gopls', 'clangd'}
 -- for _, ls in ipairs(language_servers) do
