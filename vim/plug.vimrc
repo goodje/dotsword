@@ -41,6 +41,9 @@ if has('nvim')
   " file explorer
   Plug 'kyazdani42/nvim-tree.lua'
 
+  " tab
+  Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
+
   " search for files, buffers, lines, etc
   Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
 
@@ -98,6 +101,8 @@ else " vim
   " yaml fold
   Plug 'pedrohdz/vim-yaml-folds'
 
+  Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
   "" Golang
   Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
@@ -112,6 +117,9 @@ else " vim
 
   " Show file changes(based on VCS) using Vim its sign column
   Plug 'mhinz/vim-signify'
+
+  " Javascript(js)/Typescript(ts)
+  Plug 'posva/vim-vue'
 
 endif
 
@@ -147,7 +155,6 @@ Plug 'preservim/tagbar'
 if has('nvim')
 "  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
 else
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
   " Plug 'Shougo/deoplete.nvim'
 "  Plug 'roxma/nvim-yarp'
 "  Plug 'roxma/vim-hug-neovim-rpc'
@@ -170,7 +177,7 @@ Plug 'github/copilot.vim'
 "" Python
 " to match indentation more closely what is suggested in PEP 8
 " An alternative indentation script for python
-Plug 'vim-scripts/indentpython.vim'
+" Plug 'vim-scripts/indentpython.vim'
 " lint
 Plug 'nvie/vim-flake8'
 
@@ -192,9 +199,6 @@ Plug 'weirongxu/plantuml-previewer.vim'
 " Plug 'ncm2/ncm2'
 " Plug 'roxma/nvim-yarp'
 " Plug 'phpactor/ncm2-phpactor'
-
-" Javascript(js)/Typescript(ts)
-Plug 'posva/vim-vue'
 
 " JS ORM framework
 " Plug 'prisma/vim-prisma'
@@ -316,11 +320,6 @@ endif
 " let g:ctrlp_custom_ignore = {
 "     \ 'dir':  'DS_Store\|\.venv\|\.venv3\|venv\|venv3\|\.git$\|\.hg$\|\.svn$\|bower_components$\|dist$\|node_modules$\|project_files$\|test$|__pycache__\',
 "     \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
-
-""" ag or ack
-if executable('ag')
-    let g:ackprg = 'ag --vimgrep'
-endif
 
 if has('nvim')
 else
