@@ -193,6 +193,10 @@ set number relativenumber
 " highlight current line
 set cursorline
 
+" spell check, it highlits wrong spells, press `z=` for suggestions
+" `zg` to add to dictionary
+setlocal spell spelllang=en
+
 if has("nvim")
 " load init.lua
 lua << EOF

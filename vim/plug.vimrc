@@ -63,9 +63,9 @@ if has('nvim')
   Plug 'hrsh7th/cmp-cmdline'
   Plug 'hrsh7th/nvim-cmp'
 
-  " For vsnip users.
-  Plug 'hrsh7th/cmp-vsnip'
-  Plug 'hrsh7th/vim-vsnip'
+  " For luasnip users.
+  Plug 'L3MON4D3/LuaSnip'
+  Plug 'saadparwaiz1/cmp_luasnip'
 
   " indentation guides
   Plug 'lukas-reineke/indent-blankline.nvim'
@@ -93,8 +93,8 @@ else " vim
   Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
   Plug 'junegunn/fzf.vim'
 
-  " A vim plugin to display the indention levels with thin vertical lines
-  Plug 'Yggdroot/indentLine'
+  " indentation guidelines
+  Plug 'nathanaelkane/vim-indent-guides'
 
   Plug 'tmhedberg/SimpylFold' " too slow
 
