@@ -249,6 +249,9 @@ colorscheme gruvbox-material
 " highlight Normal ctermbg=None " using system background
 
 if has('nvim')
+  " the cursorline is not obvious using theme gruvbox-material with "hard"
+  hi NvimTreeCursorLine ctermbg=235 guibg=#282828
+
   " nvim is uses nvim-tree instead of NERDTree
   map	<C-n> :NvimTreeToggle<CR>
   " focus in nvim-tree window and move the cusor to the file
