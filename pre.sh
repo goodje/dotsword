@@ -1,4 +1,4 @@
-#! /bin/sh
+#!/bin/sh
 
 # this file defines prefix and assumtions, used for install & zshrc dependencies
 
@@ -6,22 +6,22 @@ export SWORD_PATH=${HOME}/.sword
 export SWORD_CUSTOM_PATH=${SWORD_PATH}/custom
 # export $SWORD_PATH
 # export $SWORD_CUSTOM_PATH
-
-# ## todo check distribution version
-case `uname -s` in
-    Darwin*)
-        os=mac
-        ;;
-    Linux*)
-        os=linux
-        ;;
-    # CYGWIN*, MINGW*, MSYS*, ..
-    *)
-        echo "doesn't support your operating system."
-        exit -1
-esac
-
-export os
+#
+if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+	ostype="linux"
+	if [ "$(grep -Ei 'debian|buntu|mint' /etc/*release)" ]; then
+		os="ubuntu"
+	else
+		echo "Unsupported Linux distribution"
+		exit(1)
+	  fi
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+	ostype="macos"
+	os="macos"
+else
+	echo "Unsupported os"
+	exit(1)
+fi
 
 # -- function
 source_include () {
@@ -30,6 +30,9 @@ source_include () {
 
 BASEDIR=$(dirname "$0")
 
-realpath() {
-    [[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
-}
+if ! command -v realpath &> /dev/null; then
+	realpath() {
+		[[ $1 = /* ]] && echo "$1" || echo "$PWD/${1#./}"
+	}
+fi
+
