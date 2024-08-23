@@ -91,17 +91,44 @@ require("nvim-tree").setup{
   on_attach = nvim_tree_on_attach,
 }
 
-require("lualine").setup{
+local lualine = require("lualine")
+lualine.setup{
   options = {
     -- make sure theme gruvbox-material is installed
     theme = 'gruvbox-material'
-  }
+  },
+  on_attach = function(bufnr)
+	local api = require "lualine.api"
+
+	local function opts(desc)
+      local trouble = require("trouble")
+      local symbols = trouble.statusline({
+        mode = "lsp_document_symbols",
+        groups = {},
+        title = false,
+        filter = { range = true },
+        format = "{kind_icon}{symbol.name:Normal}",
+        -- The following line is needed to fix the background color
+        -- Set it to the lualine section you want to use
+        hl_group = "lualine_c_normal",
+      })
+      lualine.table.insert(opts.sections.lualine_c, {
+        symbols.get,
+        cond = symbols.has,
+      })
+	  end
+  end
 }
 
 -- fzf.lua
 vim.keymap.set("n", "<leader>f", require('fzf-lua').files, { desc = "Fzf Files" })
 vim.keymap.set("n", "<C-f>", require('fzf-lua').live_grep, { desc = "Fzf Search" })
 vim.keymap.set("n", "<leader>t", require('fzf-lua').tags, { desc = "Fzf Tags" })
+require("trouble").setup{}
+local config = require("fzf-lua.config")
+local actions = require("trouble.sources.fzf").actions
+config.defaults.actions.files["ctrl-t"] = actions.open
+vim.keymap.set("n", "<leader>d", require('trouble.sources.fzf').open, { desc = "Fzf Trouble" })
 
 -- Set up LSP
 -- The order of setup matters 1. mason, 2. mason-lspconfig, 3. language servers via lspconfig

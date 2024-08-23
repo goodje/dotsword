@@ -74,12 +74,18 @@ if has('nvim')
   Plug 'kevinhwang91/promise-async'
   Plug 'kevinhwang91/nvim-ufo'
 
+  " https://github.com/folke/trouble.nvim
+  Plug 'folke/trouble.nvim'
+
   "" Golang
   Plug 'ray-x/go.nvim'
   Plug 'ray-x/guihua.lua' " recommended if need floating window support
 
   "" Git signs similar to but more powerful than vim-fugitive
   Plug 'lewis6991/gitsigns.nvim'
+
+  Plug 'jose-elias-alvarez/null-ls.nvim'
+  Plug 'MunifTanjim/prettier.nvim'
 
 else " vim
 
@@ -120,6 +126,11 @@ else " vim
 
   " Javascript(js)/Typescript(ts)
   Plug 'posva/vim-vue'
+
+  " post install (yarn install | npm install) then load plugin only for editing supported files
+  Plug 'prettier/vim-prettier', {
+    \ 'do': 'yarn install --frozen-lockfile --production',
+    \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'html'] }
 
 endif
 
@@ -202,11 +213,6 @@ Plug 'weirongxu/plantuml-previewer.vim'
 
 " JS ORM framework
 " Plug 'prisma/vim-prisma'
-
-" post install (yarn install | npm install) then load plugin only for editing supported files
-Plug 'prettier/vim-prettier', {
-  \ 'do': 'yarn install --frozen-lockfile --production',
-  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'yaml', 'html'] }
 
 " Initialize plugin system
 call plug#end()
