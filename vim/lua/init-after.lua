@@ -260,6 +260,7 @@ lspconfig.yamlls.setup{
       schemas = {
         ["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
         ["https://run.googleapis.com/$discovery/rest?version=v1"] = "/.gcr/*-service.yml",
+        ["https://json.schemastore.org/prettierrc"] = {"/.prettierrc", "/function/.prettierrc"},
       },
     },
   }
