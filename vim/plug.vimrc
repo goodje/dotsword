@@ -75,7 +75,7 @@ if has('nvim')
   Plug 'kevinhwang91/nvim-ufo'
 
   " https://github.com/folke/trouble.nvim
-  Plug 'folke/trouble.nvim'
+  " TODO Plug 'folke/trouble.nvim'
 
   "" Golang
   Plug 'ray-x/go.nvim'
@@ -83,9 +83,6 @@ if has('nvim')
 
   "" Git signs similar to but more powerful than vim-fugitive
   Plug 'lewis6991/gitsigns.nvim'
-
-  Plug 'jose-elias-alvarez/null-ls.nvim'
-  Plug 'MunifTanjim/prettier.nvim'
 
 else " vim
 
@@ -127,12 +124,13 @@ else " vim
   " Javascript(js)/Typescript(ts)
   Plug 'posva/vim-vue'
 
+endif
+
+  " TODO figure out how to use the one in node_modules and check .prettierrc file
   " post install (yarn install | npm install) then load plugin only for editing supported files
   Plug 'prettier/vim-prettier', {
     \ 'do': 'yarn install --frozen-lockfile --production',
     \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'html'] }
-
-endif
 
 " Plug 'jistr/vim-nerdtree-tabs'  " actually, vim provides tab feature
 
