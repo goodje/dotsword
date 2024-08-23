@@ -84,6 +84,8 @@ if has('nvim')
   "" Git signs similar to but more powerful than vim-fugitive
   Plug 'lewis6991/gitsigns.nvim'
 
+  Plug 'stevearc/conform.nvim'
+
 else " vim
 
   " status bar
@@ -124,13 +126,13 @@ else " vim
   " Javascript(js)/Typescript(ts)
   Plug 'posva/vim-vue'
 
-endif
-
   " TODO figure out how to use the one in node_modules and check .prettierrc file
   " post install (yarn install | npm install) then load plugin only for editing supported files
   Plug 'prettier/vim-prettier', {
     \ 'do': 'yarn install --frozen-lockfile --production',
     \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'html'] }
+
+endif
 
 " Plug 'jistr/vim-nerdtree-tabs'  " actually, vim provides tab feature
 
@@ -445,7 +447,9 @@ augroup CSettings
 
 augroup END
 
-" for prettier plugin, it auto format after saving
-let g:prettier#autoformat = 1
-let g:prettier#autoformat_require_pragma = 0 " not matter if there is "@format" or "@prettier" tag in the file
+if !has('nvim')
+  " for prettier plugin, it auto format after saving
+  let g:prettier#autoformat = 1
+  let g:prettier#autoformat_require_pragma = 0 " not matter if there is "@format" or "@prettier" tag in the file
+endif
 
