@@ -1,0 +1,43 @@
+#!/bin/sh
+
+if ! command -v gcloud &> /dev/null; then
+  echo "gcloud is not installed. Please install Google Cloud SDK first."
+  exit 1
+fi
+
+# Fetch all accessible projects
+projects=$(gcloud projects list --format="value(projectId)")
+
+# Check if there are any projects available
+if [ -z "$projects" ]; then
+  echo "No projects found or you don't have access to any GCP projects."
+  exit 1
+fi
+
+echo "MAINTENANCE VERSION\tGCE ZONE\tTIER\tPRIMARY_ADDRESS\tPRIVATE_ADDRESS\tSTATE\tCONNECTION_NAME\tLINK"
+
+for project in $projects; do
+
+  # Fetch Cloud SQL instances with required details
+  instances=$(gcloud sql instances list --project="$project" \
+    --format="value(
+      project,
+	  name,
+      maintenanceVersion,
+      gceZone,
+      settings.tier,
+      ipAddresses[0].ipAddress,
+      ipAddresses[1].ipAddress,
+      state,
+      connectionName)" --quiet)
+      # databaseVersion,
+
+  while read -r project name maintenanceVersion gceZone tier primaryAddress privateAddress state connectionName ; do
+    if [ -n "$connectionName" ]; then # not empty
+      link="https://console.cloud.google.com/sql/instances/$instance/overview?project=$project"
+
+      echo "$maintenanceVersion\t$gceZone\t$tier\t$primaryAddress\t$privateAddress\t$state\t$connectionName\t$link"
+    fi
+  done <<< "$instances"
+
+done
