@@ -1,0 +1,41 @@
+#!/bin/sh
+
+if ! command -v gcloud > /dev/null; then
+  echo "gcloud is not installed. Please install Google Cloud SDK first."
+  exit 1
+fi
+
+# Fetch all accessible projects
+projects=$(gcloud projects list --format="value(projectId)")
+
+# Check if there are any projects available
+if [ -z "$projects" ]; then
+  echo "No projects found or you don't have access to any GCP projects."
+  exit 1
+fi
+
+# Print the header for the table
+echo -e "PROJECT\tNAME\tMACHINE_TYPE\tZONE\tSTATUS\tPUBLIC_IP\tINTERNAL_IP\tVM_LINK"
+
+# Iterate over each project and list VM instances, excluding qashier-vault
+for project in $projects; do
+  # Skip the project qashier-vault
+  if [ "$project" = "qashier-vault" ]; then
+    continue
+  fi
+
+  # Fetch VM instances in the current project
+  instances=$(gcloud compute instances list --project="$project" \
+    --format="value(name,zone,machineType,status,networkInterfaces[0].accessConfigs[0].natIP,networkInterfaces[0].networkIP)" --quiet)
+
+  # Check if any instances are found
+  if [ -n "$instances" ]; then
+    # Print each instance's details with swapped machineType and zone positions
+    echo "$instances" | while IFS=$'\t' read -r name zone machineType status publicIP internalIP; do
+      # Construct the link to the VM in the Cloud Console
+      vmLink="https://console.cloud.google.com/compute/instancesDetail/zones/$zone/instances/$name?project=$project"
+      echo "$project\t$name\t$machineType\t$zone\t$status\t${publicIP:-N/A}\t${internalIP:-N/A}\t$vmLink"
+    done
+  fi
+done
+
