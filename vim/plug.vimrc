@@ -81,9 +81,20 @@ if has('nvim')
   Plug 'ray-x/go.nvim'
   Plug 'ray-x/guihua.lua' " recommended if need floating window support
 
+  "" DAP
+  Plug 'mfussenegger/nvim-dap'
+
+  " Javascript(js)/Typescript(ts)
+  Plug 'mxsdev/nvim-dap-vscode-js'
+
+  " DAP UI
+  Plug 'nvim-neotest/nvim-nio'
+  Plug 'rcarriga/nvim-dap-ui'
+
   "" Git signs similar to but more powerful than vim-fugitive
   Plug 'lewis6991/gitsigns.nvim'
 
+  "" Formatter
   Plug 'stevearc/conform.nvim'
 
 else " vim
