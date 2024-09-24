@@ -97,6 +97,9 @@ if has('nvim')
   "" Formatter
   Plug 'stevearc/conform.nvim'
 
+  " use mason to install formatters used in conform
+  Plug 'zapling/mason-conform.nvim'
+
 else " vim
 
   " status bar
