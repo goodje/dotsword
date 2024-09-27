@@ -207,3 +207,8 @@ lua << EOF
 EOF
 endif
 
+" load user custom config
+if filereadable(expand($HOME . '/.vimrc.custom.config'))
+    source $HOME/.vimrc.custom.config
+endif
+
