@@ -448,6 +448,7 @@ require("conform").setup({
 		-- rust = { "rustfmt", lsp_format = "fallback" },
 		-- Conform will run the first available formatter
 		javascript = { "prettier", "prettierd", stop_after_first = true },
+		typescript = { "prettier", "prettierd", stop_after_first = true },
 		go = { "gofumports" },
 	},
 	-- format_on_save = {
