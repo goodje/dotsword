@@ -1,12 +1,3 @@
-if has("nvim")
-" load init.lua
-lua << EOF
-    local home = vim.fn.expand('~')
-    package.path = home .. '/.sword/vim/lua/?.lua;' .. package.path
-    require('init')
-EOF
-endif
-
 """" basic setup
 " Use vim settings, rather then vi settings (much better!)
 " This must be first, because it changes other options as a side effect.
@@ -147,10 +138,6 @@ xnoremap <leader>p "_dP
 
 """" neovim
 
-if has('nvim')
-
-endif
-
 " check if it's macos
 if has("mac")
     let g:python3_host_prog = '/opt/homebrew/bin/python3'
@@ -197,13 +184,4 @@ set cursorline
 " `zg` to add to dictionary
 setlocal spell spelllang=en
 set spellfile=~/.vim/spell/en.utf-8.add,~/.sword/vim/spell/en.utf-8.add
-
-if has("nvim")
-" load init.lua
-lua << EOF
-    local home = vim.fn.expand('~')
-    package.path = home .. '/.sword/vim/lua/?.lua;' .. package.path
-    require('init-after')
-EOF
-endif
 

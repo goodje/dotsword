@@ -1,0 +1,2 @@
+-- using lazy.nvim
+return {}
