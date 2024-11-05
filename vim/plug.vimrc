@@ -32,121 +32,50 @@ Plug 'sainnhe/gruvbox-material'
 " Plug 'altercation/vim-colors-solarized'
 
 " file navigator/explorer
-if has('nvim')
-  Plug 'nvim-tree/nvim-web-devicons' " graphic font, optional
 
-  " status bar
-  Plug 'nvim-lualine/lualine.nvim'
+" status bar
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
-  " file explorer
-  Plug 'kyazdani42/nvim-tree.lua'
+Plug 'preservim/nerdtree'
 
-  " tab
-  Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
+"" fzf also has the feature of finding files
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
-  " search for files, buffers, lines, etc
-  Plug 'ibhagwan/fzf-lua', {'branch': 'main'}
+" indentation guidelines
+Plug 'nathanaelkane/vim-indent-guides'
 
-  " highlighting
-  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'tmhedberg/SimpylFold' " too slow
 
-  "" LSP
-  " Manage LSP servers, DAP servers, linters and formatters
-  Plug 'williamboman/mason.nvim'
-  Plug 'williamboman/mason-lspconfig.nvim'
-  Plug 'neovim/nvim-lspconfig'
+" yaml fold
+Plug 'pedrohdz/vim-yaml-folds'
 
-  "" completion
-  Plug 'hrsh7th/cmp-nvim-lsp'
-  Plug 'hrsh7th/cmp-buffer'
-  Plug 'hrsh7th/cmp-path'
-  Plug 'hrsh7th/cmp-cmdline'
-  Plug 'hrsh7th/nvim-cmp'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-  " For luasnip users.
-  Plug 'L3MON4D3/LuaSnip'
-  Plug 'saadparwaiz1/cmp_luasnip'
+"" Golang
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
-  " indentation guides
-  Plug 'lukas-reineke/indent-blankline.nvim'
+" A Git wrapper
+Plug 'tpope/vim-fugitive'
 
-  " fold
-  Plug 'kevinhwang91/promise-async'
-  Plug 'kevinhwang91/nvim-ufo'
+" fugitive plugin for Growser
+" Github
+Plug 'tpope/vim-rhubarb'
+" Gitlab
+Plug 'shumphrey/fugitive-gitlab.vim'
 
-  " https://github.com/folke/trouble.nvim
-  " TODO Plug 'folke/trouble.nvim'
+" Show file changes(based on VCS) using Vim its sign column
+Plug 'mhinz/vim-signify'
 
-  "" Golang
-  Plug 'ray-x/go.nvim'
-  Plug 'ray-x/guihua.lua' " recommended if need floating window support
+" Javascript(js)/Typescript(ts)
+Plug 'posva/vim-vue'
 
-  "" DAP
-  Plug 'mfussenegger/nvim-dap'
-
-  " Javascript(js)/Typescript(ts)
-  Plug 'mxsdev/nvim-dap-vscode-js'
-
-  " DAP UI
-  Plug 'nvim-neotest/nvim-nio'
-  Plug 'rcarriga/nvim-dap-ui'
-
-  "" Git signs similar to but more powerful than vim-fugitive
-  Plug 'lewis6991/gitsigns.nvim'
-
-  "" Formatter
-  Plug 'stevearc/conform.nvim'
-
-  " use mason to install formatters used in conform
-  Plug 'zapling/mason-conform.nvim'
-
-else " vim
-
-  " status bar
-  Plug 'vim-airline/vim-airline'
-  Plug 'vim-airline/vim-airline-themes'
-
-  Plug 'preservim/nerdtree'
-
-  "" fzf also has the feature of finding files
-  Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-  Plug 'junegunn/fzf.vim'
-
-  " indentation guidelines
-  Plug 'nathanaelkane/vim-indent-guides'
-
-  Plug 'tmhedberg/SimpylFold' " too slow
-
-  " yaml fold
-  Plug 'pedrohdz/vim-yaml-folds'
-
-  Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-  "" Golang
-  Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-
-  " A Git wrapper
-  Plug 'tpope/vim-fugitive'
-
-  " fugitive plugin for Growser
-  " Github
-  Plug 'tpope/vim-rhubarb'
-  " Gitlab
-  Plug 'shumphrey/fugitive-gitlab.vim'
-
-  " Show file changes(based on VCS) using Vim its sign column
-  Plug 'mhinz/vim-signify'
-
-  " Javascript(js)/Typescript(ts)
-  Plug 'posva/vim-vue'
-
-  " TODO figure out how to use the one in node_modules and check .prettierrc file
-  " post install (yarn install | npm install) then load plugin only for editing supported files
-  Plug 'prettier/vim-prettier', {
-    \ 'do': 'yarn install --frozen-lockfile --production',
-    \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'html'] }
-
-endif
+" TODO figure out how to use the one in node_modules and check .prettierrc file
+" post install (yarn install | npm install) then load plugin only for editing supported files
+Plug 'prettier/vim-prettier', {
+  \ 'do': 'yarn install --frozen-lockfile --production',
+  \ 'for': ['javascript', 'typescript', 'css', 'less', 'scss', 'json', 'graphql', 'markdown', 'vue', 'svelte', 'html'] }
 
 " Plug 'jistr/vim-nerdtree-tabs'  " actually, vim provides tab feature
 
@@ -177,13 +106,9 @@ Plug 'preservim/tagbar'
 
 " Plug 'Valloric/YouCompleteMe'  " this plugin is very slow
 
-if has('nvim')
-"  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-else
-  " Plug 'Shougo/deoplete.nvim'
+" Plug 'Shougo/deoplete.nvim'
 "  Plug 'roxma/nvim-yarp'
 "  Plug 'roxma/vim-hug-neovim-rpc'
-endif
 
 if has('pythonx')
     if has('python3')
@@ -268,44 +193,30 @@ colorscheme gruvbox-material
 
 " highlight Normal ctermbg=None " using system background
 
-if has('nvim')
-  " the cursorline is not obvious using theme gruvbox-material with "hard"
-  hi NvimTreeCursorLine ctermbg=235 guibg=#282828
+"" autocomplete
+filetype plugin on
+set omnifunc=syntaxcomplete#Complete
 
-  " nvim is uses nvim-tree instead of NERDTree
-  map	<C-n> :NvimTreeToggle<CR>
-  " focus in nvim-tree window and move the cusor to the file
-  " l for locate
-  map <leader>l :NvimTreeFindFile<cr>
+""" nerdtree settings
+map <C-n> :NERDTreeToggle<CR>
+" open NERDTree automatically when vim starts up on opening a directory
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
+" ignore files in NERDTree
+let NERDTreeIgnore=['.idea', '.DS_Store', '.swp$', '\.pyc$', '__pycache__', '\~$']
+let NERDTreeShowHidden=1
+" let g:NERDTreeWinPos = "right"
+" focus in NERDTree window and move the cusor to the file
+map <leader>l :NERDTreeFind<cr>
 
-else " vim
+""" Airline, we use Lualine in nvim
+" let g:airline_theme='minimalist'
+" alternative themes: molokai, deus, monochrome
+" let g:airline#extensions#tabline#enabled = 1
+set laststatus=2
 
-  "" autocomplete
-  filetype plugin on
-  set omnifunc=syntaxcomplete#Complete
-
-  """ nerdtree settings
-  map <C-n> :NERDTreeToggle<CR>
-  " open NERDTree automatically when vim starts up on opening a directory
-  autocmd StdinReadPre * let s:std_in=1
-  autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | endif
-  " ignore files in NERDTree
-  let NERDTreeIgnore=['.idea', '.DS_Store', '.swp$', '\.pyc$', '__pycache__', '\~$']
-  let NERDTreeShowHidden=1
-  " let g:NERDTreeWinPos = "right"
-  " focus in NERDTree window and move the cusor to the file
-  map <leader>l :NERDTreeFind<cr>
-
-  """ Airline, we use Lualine in nvim
-  " let g:airline_theme='minimalist'
-  " alternative themes: molokai, deus, monochrome
-  " let g:airline#extensions#tabline#enabled = 1
-  set laststatus=2
-
-  " make sure gruvbox_material is installed
-  let g:airline_theme = 'gruvbox_material'
-
-endif
+" make sure gruvbox_material is installed
+let g:airline_theme = 'gruvbox_material'
 
 """ indentLine
 
@@ -331,10 +242,8 @@ let g:go_gopls_deep_completion = v:null
 """ deoplete.vim
 " let g:deoplete#enable_at_startup = 1
 
-if !has('nvim')
-  """ COC
-  source  ~/.sword/vim/coc.vimrc
-endif
+""" COC
+source  ~/.sword/vim/coc.vimrc
 
 
 """ ctrlp
@@ -461,9 +370,7 @@ augroup CSettings
 
 augroup END
 
-if !has('nvim')
-  " for prettier plugin, it auto format after saving
-  let g:prettier#autoformat = 1
-  let g:prettier#autoformat_require_pragma = 0 " not matter if there is "@format" or "@prettier" tag in the file
-endif
+" for prettier plugin, it auto format after saving
+let g:prettier#autoformat = 1
+let g:prettier#autoformat_require_pragma = 0 " not matter if there is "@format" or "@prettier" tag in the file
 
