@@ -80,7 +80,7 @@ return {
 		end,
 	},
 
-	{ "akinsho/bufferline.nvim", version = "*", dependencies = "nvim-tree/nvim-web-devicons" },
+	{ "akinsho/bufferline.nvim", version = "*", dependencies = "nvim-tree/nvim-web-devicons", opts = {} },
 
 	-- theme, inspired by gruvbox
 	{
@@ -123,27 +123,25 @@ return {
 				-- make sure theme gruvbox-material is installed
 				theme = "gruvbox-material",
 			},
-			--   on_attach = function(bufnr)
-			-- 	local api = require "lualine.api"
-			--
-			-- 	local function opts(desc)
-			--       local trouble = require("trouble")
-			--       local symbols = trouble.statusline({
-			--         mode = "lsp_document_symbols",
-			--         groups = {},
-			--         title = false,
-			--         filter = { range = true },
-			--         format = "{kind_icon}{symbol.name:Normal}",
-			--         -- The following line is needed to fix the background color
-			--         -- Set it to the lualine section you want to use
-			--         hl_group = "lualine_c_normal",
-			--       })
-			--       lualine.table.insert(opts.sections.lualine_c, {
-			--         symbols.get,
-			--         cond = symbols.has,
-			--       })
-			-- 	  end
-			--   end
+			on_attach = function(bufnr)
+				-- local api = require("lualine.api")
+
+				local trouble = require("trouble")
+				local symbols = trouble.statusline({
+					mode = "lsp_document_symbols",
+					groups = {},
+					title = false,
+					filter = { range = true },
+					format = "{kind_icon}{symbol.name:Normal}",
+					-- The following line is needed to fix the background color
+					-- Set it to the lualine section you want to use
+					hl_group = "lualine_c_normal",
+				})
+				lualine.table.insert(opts.sections.lualine_c, {
+					symbols.get,
+					cond = symbols.has,
+				})
+			end,
 		},
 	},
 
@@ -204,25 +202,6 @@ return {
 			vim.keymap.set("n", "<C-n>", ":NvimTreeToggle<CR>")
 			-- locate the buffer in the tree
 			vim.keymap.set("n", "<leader>l", ":NvimTreeFindFile<CR>")
-		end,
-	},
-
-	{
-		"ibhagwan/fzf-lua",
-		-- optional for icon support
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-		config = function()
-			-- calling `setup` is optional for customization
-			require("fzf-lua").setup({})
-
-			vim.keymap.set("n", "<leader>f", require("fzf-lua").files, { desc = "Fzf Files" })
-			vim.keymap.set("n", "<C-f>", require("fzf-lua").live_grep, { desc = "Fzf Search" })
-			vim.keymap.set("n", "<leader>t", require("fzf-lua").tags, { desc = "Fzf Tags" })
-			-- require("trouble").setup{}
-			-- local config = require("fzf-lua.config")
-			-- local actions = require("trouble.sources.fzf").actions
-			-- config.defaults.actions.files["ctrl-t"] = actions.open
-			-- vim.keymap.set("n", "<leader>d", require('trouble.sources.fzf').open, { desc = "Fzf Trouble" })
 		end,
 	},
 
@@ -477,6 +456,75 @@ return {
 		end,
 	},
 
+	--  A pretty diagnostics, references, telescope results, quickfix and location list to help you solve all the trouble your code is causing.
+	{
+		"folke/trouble.nvim",
+		opts = {}, -- for default options, refer to the configuration section for custom setup.
+		cmd = "Trouble",
+		keys = {
+			{
+				"<leader>xx",
+				"<cmd>Trouble diagnostics toggle<cr>",
+				desc = "Diagnostics (Trouble)",
+			},
+			{
+				"<leader>xX",
+				"<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
+				desc = "Buffer Diagnostics (Trouble)",
+			},
+			{
+				"<leader>cs",
+				"<cmd>Trouble symbols toggle focus=false<cr>",
+				desc = "Symbols (Trouble)",
+			},
+			{
+				"<leader>cl",
+				"<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
+				desc = "LSP Definitions / references / ... (Trouble)",
+			},
+			{
+				"<leader>xL",
+				"<cmd>Trouble loclist toggle<cr>",
+				desc = "Location List (Trouble)",
+			},
+			{
+				"<leader>xQ",
+				"<cmd>Trouble qflist toggle<cr>",
+				desc = "Quickfix List (Trouble)",
+			},
+		},
+	},
+
+	{
+		"ibhagwan/fzf-lua",
+		-- optional for icon support
+		dependencies = { "nvim-tree/nvim-web-devicons" },
+		config = function()
+			-- calling `setup` is optional for customization
+			require("fzf-lua").setup({})
+
+			vim.keymap.set("n", "<leader>f", require("fzf-lua").files, { desc = "Fzf Files" })
+			vim.keymap.set("n", "<C-f>", require("fzf-lua").live_grep, { desc = "Fzf Search" })
+			vim.keymap.set("n", "<leader>t", require("fzf-lua").tags, { desc = "Fzf Tags" })
+
+			local config = require("fzf-lua.config")
+			local actions = require("trouble.sources.fzf").actions
+			config.defaults.actions.files["ctrl-t"] = actions.open
+			vim.keymap.set("n", "<leader>d", require("trouble.sources.fzf").open, { desc = "Fzf Trouble" })
+		end,
+	},
+
+	{
+		"preservim/tagbar",
+		config = function()
+			vim.keymap.set("n", "<leader>tt", ":TagbarToggle<CR>")
+		end,
+	},
+
+	{
+		"mhinz/vim-startify",
+	},
+
 	-- Golang
 	{
 		"ray-x/go.nvim",
@@ -661,11 +709,15 @@ return {
 				-- Conform will run multiple formatters sequentially
 				python = { "black" },
 				-- You can customize some of the format options for the filetype (:help conform.format)
-				-- rust = { "rustfmt", lsp_format = "fallback" },
+				rust = { "rustfmt", lsp_format = "fallback" },
 				-- Conform will run the first available formatter
 				javascript = { "prettier", "prettierd", stop_after_first = true },
 				typescript = { "prettier", "prettierd", stop_after_first = true },
-				go = { "gofumports" },
+				go = { "goimports" },
+				yamlfmt = { "yamlfmt", "yq", lsp_format = "fallback" },
+				sh = { "shellcheck" },
+				zshrc = { "shellcheck" },
+				sql = { "sqlfluff" },
 			},
 			-- format_on_save = {
 			--   -- These options will be passed to conform.format()
