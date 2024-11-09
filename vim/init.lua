@@ -166,7 +166,9 @@ vim.api.nvim_set_keymap("n", "<leader><space>", ":noh<CR>", { noremap = true, si
 vim.opt.history = 10000           -- Increase command history size
 
 -- Disable mouse
-vim.opt.mouse = ""
+-- vim.opt.mouse = ""
+-- yank to system clipboard
+vim.api.nvim_set_option("clipboard", "unnamed")
 
 -- Clipboard settings
 -- Paste without overwriting the clipboard
