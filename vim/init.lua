@@ -14,7 +14,14 @@ vim.opt.binary = true
 vim.opt.ttyfast = true
 vim.opt.fileformats = { "unix", "dos", "mac" }
 
+---- nvim-tree/nvim-tree.lua
+-- disable netrw at the very start of your init.lua
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+----
+
 -- Appearance settings
+-- optionally enable 24-bit colour
 vim.opt.termguicolors = true -- Equivalent to setting t_Co=256
 if vim.opt.termguicolors:get() then
     vim.cmd("syntax on")
