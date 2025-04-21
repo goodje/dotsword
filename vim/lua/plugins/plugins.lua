@@ -861,24 +861,21 @@ return {
 			},
 		},
 		setup = function(_, opts)
-			require("todo-comments").setup(otps)
+			require("todo-comments").setup(opts)
 			vim.keymap.set("n", "]t", function()
 				require("todo-comments").jump_next()
 			end, { desc = "Next todo comment" })
+			-- vim.keymap.set("n", "]t", function()
+			-- 	require("todo-comments").jump_next({ keywords = { "ERROR", "WARNING" } })
+			-- end, { desc = "Next error/warning todo comment" })
 
 			vim.keymap.set("n", "[t", function()
 				require("todo-comments").jump_prev()
 			end, { desc = "Previous todo comment" })
 
 			-- You can also specify a list of valid jump keywords
-
-			vim.keymap.set("n", "]t", function()
-				require("todo-comments").jump_next({ keywords = { "ERROR", "WARNING" } })
-			end, { desc = "Next error/warning todo comment" })
 		end,
 	},
-
-	{ "github/copilot.vim" },
 
 	-- open the link of current line on github,Bitbucket,
 	-- self-deployed GitHub, Googlesource, GitLab, and SourceHut
@@ -888,4 +885,18 @@ return {
 
 	-- for Python, static syntax and style checker
 	{ "nvie/vim-flake8" },
+
+	-- { "github/copilot.vim" },
+
+	{
+		"augmentcode/augment.vim",
+		config = function()
+			vim.g.augment_workspace_folders = { vim.fn.expand("~/workspace/goodje/ExpenseTracker") }
+
+			vim.keymap.set("n", "<leader>ac", ":Augment chat<CR>")
+			vim.keymap.set("v", "<leader>ac", ":Augment chat<CR>")
+			vim.keymap.set("n", "<leader>an", ":Augment chat-new<CR>")
+			vim.keymap.set("n", "<leader>at", ":Augment chat-toggle<CR>")
+		end,
+	},
 }
