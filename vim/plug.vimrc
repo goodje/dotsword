@@ -154,6 +154,10 @@ Plug 'weirongxu/plantuml-previewer.vim'
 " Plug 'prisma/vim-prisma'
 
 " Initialize plugin system
+" load user custom plugins
+if filereadable(expand($HOME . '/.vimrc.custom.plugins'))
+    source $HOME/.vimrc.custom.plugins
+endif
 call plug#end()
 
 
