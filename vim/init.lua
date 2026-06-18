@@ -215,7 +215,7 @@ vim.opt.cursorline = true
 -- Highlights spelling errors; press `z=` for suggestions, `zg` to add to dictionary
 vim.opt.spell = true
 vim.opt.spelllang = { "en" }
-vim.opt.spellfile = { "~/.vim/spell/en.utf-8.add", "~/.sword/vim/spell/en.utf-8.add" }
+vim.opt.spellfile = { os.getenv('HOME') .. "/.sword/vim/spell/en.utf-8.add" }
 
 require("config.lazy")
 

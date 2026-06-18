@@ -210,15 +210,18 @@ return {
 	-- The order of setup matters 1. mason, 2. mason-lspconfig, 3. language servers via lspconfig
 	{
 		"williamboman/mason.nvim",
-		dependencies = {
-			"williamboman/mason-lspconfig.nvim",
-			"neovim/nvim-lspconfig",
-			"hrsh7th/nvim-cmp",
-			"hrsh7th/cmp-nvim-lsp",
-		},
-
 		config = function()
 			require("mason").setup()
+		end
+	},
+	
+	{
+		"williamboman/mason-lspconfig.nvim",
+		dependencies = {
+			"williamboman/mason.nvim",
+			"neovim/nvim-lspconfig",
+		},
+		config = function()
 			require("mason-lspconfig").setup({
 				ensure_installed = {
 					"ts_ls",
@@ -232,39 +235,63 @@ return {
 					"docker_compose_language_service",
 					"lua_ls",
 				},
+				automatic_enable = false, -- Explicitly disable the automatic_enable feature
 			})
-			-- mason-lspconfig doesn't support ccls yet
-
+		end
+	},
+	
+	{
+		"neovim/nvim-lspconfig",
+		dependencies = {
+			"hrsh7th/nvim-cmp",
+			"hrsh7th/cmp-nvim-lsp",
+		},
+		config = function()
 			local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-			-- Tell the server the capability of foldingRange,
-			-- Neovim hasn't added foldingRange to default capabilities, users must add it manually
-			-- local capabilities = vim.lsp.protocol.make_client_capabilities()
+			
+			-- Tell the server the capability of foldingRange
 			capabilities.textDocument.foldingRange = {
 				dynamicRegistration = false,
 				lineFoldingOnly = true,
 			}
-
+			
 			local lspconfig = require("lspconfig")
-			lspconfig.ts_ls.setup({
-				capabilities = capabilities,
-			})
-			lspconfig.pyright.setup({
-				capabilities = capabilities,
-			})
-			lspconfig.postgres_lsp.setup({
-				capabilities = capabilities,
-			})
-			lspconfig.gopls.setup({
-				capabilities = capabilities,
-			})
-			-- lspconfig.gradle_ls.setup{
-			--   capabilities = capabilities
-			-- }
-			lspconfig.vuels.setup({
-				capabilities = capabilities,
-			})
-
+			
+			-- global node_modules path
+			local node_modules_path = vim.fn.system("npm root -g"):gsub("\n", "")
+			local vue_plugin_path = node_modules_path .. "/@vue/typescript-plugin"
+			if node_modules_path and vim.fn.isdirectory(vue_plugin_path) == 1 then
+				lspconfig.ts_ls.setup({
+					capabilities = capabilities,
+					init_options = {
+						plugins = {
+							{
+								name = "@vue/typescript-plugin",
+								location = vue_plugin_path,
+								languages = { "javascript", "typescript", "vue" },
+							},
+						},
+					},
+					filetypes = {
+						"javascript",
+						"typescript",
+						"vue",
+					},
+				})
+			else
+				lspconfig.ts_ls.setup({ capabilities = capabilities })
+				vim.notify(
+					"Error: node module @vue/typescript-plugin is not installed globally.\n run npm i -g @vue/typescript-plugin to install it",
+					vim.log.levels.ERROR
+				)
+			end
+			
+			-- Setup other LSP servers
+			lspconfig.pyright.setup({ capabilities = capabilities })
+			lspconfig.postgres_lsp.setup({ capabilities = capabilities })
+			lspconfig.gopls.setup({ capabilities = capabilities })
+			lspconfig.vuels.setup({ capabilities = capabilities })
+			
 			lspconfig.ccls.setup({
 				capabilities = capabilities,
 				init_options = {
@@ -280,7 +307,7 @@ return {
 					},
 				},
 			})
-
+			
 			lspconfig.yamlls.setup({
 				capabilities = capabilities,
 				settings = {
@@ -293,13 +320,11 @@ return {
 					},
 				},
 			})
-
+			
 			-- don't get confused with sqls(https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#sqlls)
 			-- refer to https://github.com/joe-re/sql-language-server
-			lspconfig.sqlls.setup({
-				capabilities = capabilities,
-			})
-
+			lspconfig.sqlls.setup({ capabilities = capabilities })
+			
 			lspconfig.dockerls.setup({
 				capabilities = capabilities,
 				settings = {
@@ -312,24 +337,15 @@ return {
 					},
 				},
 			})
-
+			
 			lspconfig.docker_compose_language_service.setup({})
-
+			
 			--Enable (broadcasting) snippet capability for completion
 			capabilities.textDocument.completion.completionItem.snippetSupport = true
-
-			lspconfig.html.setup({
-				capabilities = capabilities,
-			})
-
-			-- local language_servers = require("lspconfig").util.available_servers() -- or list servers manually like {'gopls', 'clangd'}
-			-- for _, ls in ipairs(language_servers) do
-			--     require('lspconfig')[ls].setup({
-			--         capabilities = capabilities
-			--     })
-			-- end
-
-			-- nvim-lspconfig
+			
+			lspconfig.html.setup({ capabilities = capabilities })
+			
+			-- nvim-lspconfig keymaps
 			vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
 			vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
 			vim.keymap.set("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
@@ -511,6 +527,7 @@ return {
 			vim.keymap.set("n", "<leader>f", require("fzf-lua").files, { desc = "Fzf Files" })
 			vim.keymap.set("n", "<C-f>", require("fzf-lua").live_grep, { desc = "Fzf Search" })
 			vim.keymap.set("n", "<leader>t", require("fzf-lua").tags, { desc = "Fzf Tags" })
+			vim.keymap.set("n", "<leader>u", require("fzf-lua").buffers, { desc = "Fzf Buffers" })
 
 			local config = require("fzf-lua.config")
 			local actions = require("trouble.sources.fzf").actions
