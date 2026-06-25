@@ -227,7 +227,7 @@ return {
 					"ts_ls",
 					"pyright",
 					"gopls",
-					"vuels",
+					"vue_ls",
 					"yamlls",
 					"sqlls",
 					"html",
@@ -257,10 +257,15 @@ return {
 			
 			local lspconfig = require("lspconfig")
 			
-			-- global node_modules path
-			local node_modules_path = vim.fn.system("npm root -g"):gsub("\n", "")
-			local vue_plugin_path = node_modules_path .. "/@vue/typescript-plugin"
-			if node_modules_path and vim.fn.isdirectory(vue_plugin_path) == 1 then
+			-- @vue/typescript-plugin MUST match the @vue/language-server (vue_ls)
+			-- version exactly, or Volar's hybrid mode fails to register the
+			-- plugin in tsserver and every .vue didOpen is rejected
+			-- ("Unexpected resource"). mason installs the plugin alongside
+			-- vue-language-server at the matching version, so use that instead
+			-- of a separately-versioned global npm install.
+			local vue_plugin_path =
+				vim.fn.expand("~/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/typescript-plugin")
+			if vim.fn.isdirectory(vue_plugin_path) == 1 then
 				lspconfig.ts_ls.setup({
 					capabilities = capabilities,
 					init_options = {
@@ -281,7 +286,7 @@ return {
 			else
 				lspconfig.ts_ls.setup({ capabilities = capabilities })
 				vim.notify(
-					"Error: node module @vue/typescript-plugin is not installed globally.\n run npm i -g @vue/typescript-plugin to install it",
+					"Error: @vue/typescript-plugin not found under mason vue-language-server.\n run :MasonInstall vue-language-server to install it",
 					vim.log.levels.ERROR
 				)
 			end
@@ -290,7 +295,12 @@ return {
 			lspconfig.pyright.setup({ capabilities = capabilities })
 			lspconfig.postgres_lsp.setup({ capabilities = capabilities })
 			lspconfig.gopls.setup({ capabilities = capabilities })
-			lspconfig.vuels.setup({ capabilities = capabilities })
+			-- This nvim-lspconfig ships vue_ls only as a native lsp/vue_ls.lua
+			-- config, so the legacy lspconfig.vue_ls.setup() no-ops (warns
+			-- "config vue_ls not found") and never enables it. Enable it via
+			-- the native API, merging our foldingRange capabilities.
+			vim.lsp.config("vue_ls", { capabilities = capabilities })
+			vim.lsp.enable("vue_ls")
 			
 			lspconfig.ccls.setup({
 				capabilities = capabilities,
@@ -458,22 +468,20 @@ return {
 			vim.keymap.set("n", "zR", require("ufo").openAllFolds)
 			vim.keymap.set("n", "zM", require("ufo").closeAllFolds)
 
-			-- Option 2: nvim lsp as LSP client
-			-- Tell the server the capability of foldingRange,
-			-- Neovim hasn't added foldingRange to default capabilities, users must add it manually
-			local capabilities = vim.lsp.protocol.make_client_capabilities()
-			capabilities.textDocument.foldingRange = {
-				dynamicRegistration = false,
-				lineFoldingOnly = true,
-			}
-			local language_servers = require("lspconfig").util.available_servers() -- or list servers manually like {'gopls', 'clangd'}
-			for _, ls in ipairs(language_servers) do
-				require("lspconfig")[ls].setup({
-					capabilities = capabilities,
-					-- you can add other fields for setting up lsp server in this table
-				})
-			end
-			require("ufo").setup()
+			-- foldingRange capability is already added to every server in the
+			-- main lspconfig block above, so no per-server re-setup is needed
+			-- here (the old loop also warned: config "vue_ls" not found).
+			require("ufo").setup({
+				-- Volar (vue_ls) rejects textDocument/foldingRange with
+				-- "The document should be opened for foldingRanges" (still
+				-- broken in 3.3.5). Use treesitter folds for vue to sidestep.
+				provider_selector = function(_, filetype, _)
+					if filetype == "vue" then
+						return { "treesitter", "indent" }
+					end
+					return { "lsp", "indent" }
+				end,
+			})
 		end,
 	},
 
@@ -904,16 +912,4 @@ return {
 	{ "nvie/vim-flake8" },
 
 	-- { "github/copilot.vim" },
-
-	{
-		"augmentcode/augment.vim",
-		config = function()
-			vim.g.augment_workspace_folders = { vim.fn.expand("~/workspace/goodje/ExpenseTracker") }
-
-			vim.keymap.set("n", "<leader>ac", ":Augment chat<CR>")
-			vim.keymap.set("v", "<leader>ac", ":Augment chat<CR>")
-			vim.keymap.set("n", "<leader>an", ":Augment chat-new<CR>")
-			vim.keymap.set("n", "<leader>at", ":Augment chat-toggle<CR>")
-		end,
-	},
 }
