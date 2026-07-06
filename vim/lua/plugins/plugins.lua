@@ -117,32 +117,33 @@ return {
 	-- status bar
 	{
 		"nvim-lualine/lualine.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons" },
-		opts = {
-			options = {
+		dependencies = { "nvim-tree/nvim-web-devicons", "folke/trouble.nvim" },
+		opts = function(_, opts)
+			opts.options = {
 				-- make sure theme gruvbox-material is installed
 				theme = "gruvbox-material",
-			},
-			on_attach = function(bufnr)
-				-- local api = require("lualine.api")
+			}
 
-				local trouble = require("trouble")
-				local symbols = trouble.statusline({
-					mode = "lsp_document_symbols",
-					groups = {},
-					title = false,
-					filter = { range = true },
-					format = "{kind_icon}{symbol.name:Normal}",
-					-- The following line is needed to fix the background color
-					-- Set it to the lualine section you want to use
-					hl_group = "lualine_c_normal",
-				})
-				lualine.table.insert(opts.sections.lualine_c, {
-					symbols.get,
-					cond = symbols.has,
-				})
-			end,
-		},
+			local trouble = require("trouble")
+			local symbols = trouble.statusline({
+				mode = "lsp_document_symbols",
+				groups = {},
+				title = false,
+				filter = { range = true },
+				format = "{kind_icon}{symbol.name:Normal}",
+				-- The following line is needed to fix the background color
+				-- Set it to the lualine section you want to use
+				hl_group = "lualine_c_normal",
+			})
+			opts.sections = opts.sections or {}
+			opts.sections.lualine_c = opts.sections.lualine_c or { "filename" }
+			table.insert(opts.sections.lualine_c, {
+				symbols.get,
+				cond = symbols.has,
+			})
+
+			return opts
+		end,
 	},
 
 	{
@@ -233,6 +234,7 @@ return {
 					"html",
 					"dockerls",
 					"docker_compose_language_service",
+					"jsonls",
 					"lua_ls",
 				},
 				automatic_enable = false, -- Explicitly disable the automatic_enable feature
@@ -349,6 +351,8 @@ return {
 			})
 			
 			lspconfig.docker_compose_language_service.setup({})
+
+			lspconfig.jsonls.setup({ capabilities = capabilities })
 			
 			--Enable (broadcasting) snippet capability for completion
 			capabilities.textDocument.completion.completionItem.snippetSupport = true
