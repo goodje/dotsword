@@ -10,7 +10,7 @@ mac
 	by brew
 	brew brew.coreutils
 linux
-    sudo ln -snf /usr/share/zoneinfo/Asia/Singapore /etc/localtime
+    sudo ln -snf /usr/share/zoneinfo/<Region/City> /etc/localtime
 	apt/yum/requirement
     sudo apt-get update
     sudo apt-get install libncurses5-dev libncursesw5-dev mongodb-clients redis-tools liblzo2-dev

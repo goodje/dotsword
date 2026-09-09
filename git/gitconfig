@@ -2,9 +2,11 @@
     editor = vim
     excludesfile = ~/.sword/git/gitignore
 
-[user]
-    name = goodje
-    email = 1475199+goodje@users.noreply.github.com
+# Identity is kept out of the repo. Put [user] name/email in
+# ~/.sword/custom/gitconfig.local (gitignored), or run:
+#   git_repo_start -g --name=<name> --email=<email>
+[include]
+    path = ~/.sword/custom/gitconfig.local
 
 [url "git@github.com:"]
      insteadOf = https://github.com/

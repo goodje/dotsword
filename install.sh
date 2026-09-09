@@ -4,6 +4,7 @@ SWORD_PATH=${HOME}/.sword
 . $SWORD_PATH/pre.sh
 
 SET_TIMEZONE=0
+TIMEZONE=${TIMEZONE:-UTC}   # e.g. Region/City
 
 git submodule init
 git submodule update
@@ -14,7 +15,7 @@ git submodule update
 
 # set timezone
 if [[ $ostype == "linux" && $SET_TIMEZONE ]]; then
-	sudo ln -snf /usr/share/zoneinfo/Asia/Singapore /etc/localtime
+	sudo ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 fi
 
 if [[ $os == "ubuntu" ]]; then
@@ -37,7 +38,7 @@ elif [[ $os == "macos" ]]; then
     fi
 
     echo "brew installing stuff"
-    brew install zsh zsh-completions tmux nvim python3 fzf ripgrep
+    brew install zsh zsh-completions tmux nvim python3 fzf ripgrep gitleaks
 fi
 
 # oh-my-zsh
@@ -131,7 +132,7 @@ fi
 
 # workspace
 if [[ ! -d ~/workspace ]]; then
-	mkdir -p ~/workspace/goodje
+	mkdir -p ~/workspace/projects
 	mkdir -p ~/workspace/vendors
 fi
 

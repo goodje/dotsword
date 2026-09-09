@@ -1,0 +1,16 @@
+# gitleaks configuration — https://github.com/gitleaks/gitleaks
+# Run locally:
+#   gitleaks git    --config .gitleaks.toml          # full history
+#   gitleaks dir .  --config .gitleaks.toml          # working tree
+title = "dotsword"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Files that never contain secrets"
+paths = [
+  '''vim/lazy-lock\.json$''',
+  '''vim/spell/.*''',
+  '''^LICENSE$''',
+]

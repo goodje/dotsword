@@ -3,7 +3,7 @@
 vim.cmd("filetype on")
 
 vim.g.mapleader = ','
-vim.g.maplocalleader = ‘,’
+vim.g.maplocalleader = ','
 
 -- Encoding settings
 vim.opt.encoding = "utf-8"

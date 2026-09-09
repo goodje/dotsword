@@ -2,6 +2,3 @@
 [submodule "vendors/dotcoal"]
 	path = vendors/dotcoal
 	url = git@github.com:goodje/dotcoal.git
-[submodule "vendors/dottmux"]
-	path = vendors/dottmux
-	url = git@github.com:goodje/.tmux.git
