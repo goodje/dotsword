@@ -3,10 +3,11 @@ return {
 	{ "nvim-tree/nvim-web-devicons" },
 	{
 		"nvim-treesitter/nvim-treesitter",
-		run = ":TSUpdate",
-		opts = {
-			-- A list of parser names, or "all" (the listed parsers MUST always be installed)
-			ensure_installed = {
+		branch = "main", -- master branch is frozen and does not support nvim 0.12+
+		lazy = false,
+		build = ":TSUpdate",
+		config = function()
+			require("nvim-treesitter").install({
 				"c",
 				"go",
 				"gomod",
@@ -36,47 +37,23 @@ return {
 				"dockerfile",
 				"bash",
 				"sql",
-			},
+			})
 
-			-- Install parsers synchronously (only applied to `ensure_installed`)
-			sync_install = false,
-
-			-- Automatically install missing parsers when entering buffer
-			-- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
-			auto_install = true,
-
-			-- List of parsers to ignore installing (or "all")
-			-- ignore_install = { "javascript" },
-
-			---- If you need to change the installation directory of the parsers (see -> Advanced Setup)
-			-- parser_install_dir = "/some/path/to/store/parsers", -- Remember to run vim.opt.runtimepath:append("/some/path/to/store/parsers")!
-
-			highlight = {
-				enable = true,
-
-				-- NOTE: these are the names of the parsers and not the filetype. (for example if you want to
-				-- disable highlighting for the `tex` filetype, you need to include `latex` in this list as this is
-				-- the name of the parser)
-				-- list of language that will be disabled
-				-- disable = { "c", "rust" },
-				-- Or use a function for more flexibility, e.g. to disable slow treesitter highlight for large files
-				disable = function(lang, buf)
-					local max_filesize = 100 * 1024 -- 100 KB
-					local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
-					if ok and stats and stats.size > max_filesize then
-						return true
+			-- main branch no longer auto-enables highlighting; start it per buffer
+			vim.api.nvim_create_autocmd("FileType", {
+				callback = function(args)
+					local lang = vim.treesitter.language.get_lang(args.match)
+					if not lang then
+						return
 					end
+					local max_filesize = 100 * 1024 -- 100 KB
+					local ok, stats = pcall(vim.uv.fs_stat, vim.api.nvim_buf_get_name(args.buf))
+					if ok and stats and stats.size > max_filesize then
+						return
+					end
+					pcall(vim.treesitter.start, args.buf, lang)
 				end,
-
-				-- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-				-- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-				-- Using this option may slow down your editor, and you may see some duplicate highlights.
-				-- Instead of true it can also be a list of languages
-				additional_vim_regex_highlighting = false,
-			},
-		},
-		config = function(_, opts)
-			require("nvim-treesitter.configs").setup(opts)
+			})
 		end,
 	},
 
@@ -257,8 +234,6 @@ return {
 				lineFoldingOnly = true,
 			}
 			
-			local lspconfig = require("lspconfig")
-			
 			-- @vue/typescript-plugin MUST match the @vue/language-server (vue_ls)
 			-- version exactly, or Volar's hybrid mode fails to register the
 			-- plugin in tsserver and every .vue didOpen is rejected
@@ -268,7 +243,7 @@ return {
 			local vue_plugin_path =
 				vim.fn.expand("~/.local/share/nvim/mason/packages/vue-language-server/node_modules/@vue/typescript-plugin")
 			if vim.fn.isdirectory(vue_plugin_path) == 1 then
-				lspconfig.ts_ls.setup({
+				vim.lsp.config("ts_ls", {
 					capabilities = capabilities,
 					init_options = {
 						plugins = {
@@ -286,25 +261,20 @@ return {
 					},
 				})
 			else
-				lspconfig.ts_ls.setup({ capabilities = capabilities })
+				vim.lsp.config("ts_ls", { capabilities = capabilities })
 				vim.notify(
 					"Error: @vue/typescript-plugin not found under mason vue-language-server.\n run :MasonInstall vue-language-server to install it",
 					vim.log.levels.ERROR
 				)
 			end
-			
+
 			-- Setup other LSP servers
-			lspconfig.pyright.setup({ capabilities = capabilities })
-			lspconfig.postgres_lsp.setup({ capabilities = capabilities })
-			lspconfig.gopls.setup({ capabilities = capabilities })
-			-- This nvim-lspconfig ships vue_ls only as a native lsp/vue_ls.lua
-			-- config, so the legacy lspconfig.vue_ls.setup() no-ops (warns
-			-- "config vue_ls not found") and never enables it. Enable it via
-			-- the native API, merging our foldingRange capabilities.
+			vim.lsp.config("pyright", { capabilities = capabilities })
+			vim.lsp.config("postgres_lsp", { capabilities = capabilities })
+			vim.lsp.config("gopls", { capabilities = capabilities })
 			vim.lsp.config("vue_ls", { capabilities = capabilities })
-			vim.lsp.enable("vue_ls")
-			
-			lspconfig.ccls.setup({
+
+			vim.lsp.config("ccls", {
 				capabilities = capabilities,
 				init_options = {
 					compilationDatabaseDirectory = "build",
@@ -320,7 +290,7 @@ return {
 				},
 			})
 			
-			lspconfig.yamlls.setup({
+			vim.lsp.config("yamlls", {
 				capabilities = capabilities,
 				settings = {
 					yaml = {
@@ -335,9 +305,9 @@ return {
 			
 			-- don't get confused with sqls(https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#sqlls)
 			-- refer to https://github.com/joe-re/sql-language-server
-			lspconfig.sqlls.setup({ capabilities = capabilities })
-			
-			lspconfig.dockerls.setup({
+			vim.lsp.config("sqlls", { capabilities = capabilities })
+
+			vim.lsp.config("dockerls", {
 				capabilities = capabilities,
 				settings = {
 					docker = {
@@ -350,15 +320,30 @@ return {
 				},
 			})
 			
-			lspconfig.docker_compose_language_service.setup({})
+			vim.lsp.config("docker_compose_language_service", {})
 
-			lspconfig.jsonls.setup({ capabilities = capabilities })
-			
+			vim.lsp.config("jsonls", { capabilities = capabilities })
+
 			--Enable (broadcasting) snippet capability for completion
 			capabilities.textDocument.completion.completionItem.snippetSupport = true
-			
-			lspconfig.html.setup({ capabilities = capabilities })
-			
+
+			vim.lsp.config("html", { capabilities = capabilities })
+
+			vim.lsp.enable({
+				"ts_ls",
+				"pyright",
+				"postgres_lsp",
+				"gopls",
+				"vue_ls",
+				"ccls",
+				"yamlls",
+				"sqlls",
+				"dockerls",
+				"docker_compose_language_service",
+				"jsonls",
+				"html",
+			})
+
 			-- nvim-lspconfig keymaps
 			vim.keymap.set("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
 			vim.keymap.set("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>")
