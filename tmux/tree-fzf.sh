@@ -35,23 +35,39 @@ fi
 rows=$(mktemp)
 trap 'rm -f "$rows"' EXIT
 
+# list width: popup width minus the 50% preview, gutter and borders
+width=$(( $(tput cols) / 2 - 4 ))
+
 # rows: target \t level \t display
+# Long paths are shortened in the middle; the full path is appended past the
+# visible width (cut off by --no-hscroll) so it stays searchable.
 tmux list-panes -a -F \
   $'#{session_name}\t#{window_index}\t#{window_name}\t#{window_panes}\t#{pane_index}\t#{pane_current_command}\t#{pane_current_path}\t#{session_windows}' |
-  awk -F'\t' -v home="$HOME" '{
-    s = $1; w = $2; p = $5; path = $7; sub("^" home, "~", path)
-    if (s != prev_s) { printf "%s:\t0\t\033[1;32m%s\033[0m: %d windows\n", s, s, $8; prev_s = s; prev_w = "" }
-    if (w != prev_w) {
-      if ($4 == 1) printf "%s:%s.%s\t1\t%s: \033[36m%s\033[0m  %s  \033[2m%s\033[0m\n", s, w, p, w, $3, $6, path
-      else         printf "%s:%s\t1\t%s: \033[36m%s\033[0m  (%d panes)\n", s, w, w, $3, $4
-      prev_w = w
+  awk -F'\t' -v home="$HOME" -v width="$width" '
+    # used = visible chars before the path, incl. tree glyphs (3 per level)
+    function fit(path, used,   max, head, pad) {
+      max = width - used
+      if (length(path) <= max || max < 12) return "\033[2m" path "\033[0m"
+      head = int((max - 2) / 3)
+      pad = sprintf("%30s", "")
+      return "\033[2m" substr(path, 1, head) ".." substr(path, length(path) - (max - 2 - head) + 1) "\033[0m" pad path
     }
-    if ($4 > 1) printf "%s:%s.%s\t2\t%s.%s  %s  \033[2m%s\033[0m\n", s, w, p, w, p, $6, path
-  }' > "$rows"
+    {
+      s = $1; w = $2; p = $5; path = $7; sub("^" home, "~", path)
+      if (s != prev_s) { printf "%s:\t0\t\033[1;32m%s\033[0m: %d windows\n", s, s, $8; prev_s = s; prev_w = "" }
+      if (w != prev_w) {
+        if ($4 == 1) printf "%s:%s.%s\t1\t%s: \033[36m%s\033[0m  %s  %s\n", s, w, p, w, $3, $6,
+                       fit(path, 3 + length(w ": " $3 "  " $6 "  "))
+        else         printf "%s:%s\t1\t%s: \033[36m%s\033[0m  (%d panes)\n", s, w, w, $3, $4
+        prev_w = w
+      }
+      if ($4 > 1) printf "%s:%s.%s\t2\t%s.%s  %s  %s\n", s, w, p, w, p, $6,
+                    fit(path, 6 + length(w "." p "  " $6 "  "))
+    }' > "$rows"
 
 self=$0
 target=$("$self" --list "$rows" "" |
-  fzf --ansi --raw --no-sort --reverse --delimiter '\t' --with-nth 2.. \
+  fzf --ansi --raw --no-sort --reverse --no-hscroll --ellipsis '' --delimiter '\t' --with-nth 2.. \
       --bind "change:reload-sync:\"$self\" --list \"$rows\" {q}" \
       --preview 'tmux capture-pane -ep -t {1}' --preview-window right,50% |
   cut -f1)
