@@ -1,0 +1,30 @@
+#!/bin/bash
+# Claude Code SessionStart/SessionEnd hook: tag the tmux pane with the live
+# session id so tmux-resurrect can relaunch `claude --resume` (see cc-tmux-resurrect).
+[ -n "$TMUX_PANE" ] || exit 0
+if [ "$1" = end ]; then
+  tmux set -pu -t "$TMUX_PANE" @cc_sid
+  exit 0
+fi
+sid=$(jq -r '.session_id // empty')
+[ -n "$sid" ] || exit 0
+
+# find the claude process among our ancestors; keep only flags safe to replay
+pid=$PPID args=
+while [ "${pid:-1}" -gt 1 ]; do
+  a=$(ps -o args= -p "$pid")
+  case $a in claude|claude\ *|*/claude|*/claude\ *) args=$a; break ;; esac
+  pid=$(ps -o ppid= -p "$pid" | tr -d ' ')
+done
+read -ra argv <<<"$args"
+keep=
+for ((i = 1; i < ${#argv[@]}; i++)); do
+  case ${argv[i]} in
+    --dangerously-skip-permissions) keep+=" --permission-mode auto" ;;
+    --permission-mode=* | --model=*) keep+=" ${argv[i]}" ;;
+    --permission-mode | --model) keep+=" ${argv[i]} ${argv[i+1]}"; ((i++)) ;;
+  esac
+done
+
+tmux set -p -t "$TMUX_PANE" @cc_sid "$sid"
+tmux set -p -t "$TMUX_PANE" @cc_flags "${keep# }"

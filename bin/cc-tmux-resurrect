@@ -1,0 +1,16 @@
+#!/bin/bash
+# tmux-resurrect post-save / post-restore hooks: persist and relaunch the
+# Claude Code sessions that cc-tmux-track tagged on each pane.
+f=${XDG_DATA_HOME:-$HOME/.local/share}/tmux/resurrect/claude_sessions.txt
+case $1 in
+save)
+  tmux list-panes -a -F '#{session_name}:#{window_index}.#{pane_index}	#{@cc_sid}	#{@cc_flags}' |
+    awk -F'\t' '$2 != ""' >"$f.tmp" && mv "$f.tmp" "$f"
+  ;;
+restore)
+  [ -f "$f" ] || exit 0
+  while IFS=$'\t' read -r target sid flags; do
+    tmux send-keys -t "$target" "claude $flags --resume $sid" Enter
+  done <"$f"
+  ;;
+esac
