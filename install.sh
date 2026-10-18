@@ -9,6 +9,9 @@ TIMEZONE=${TIMEZONE:-UTC}   # e.g. Region/City
 git submodule init
 git submodule update
 
+# pre-commit: gitleaks + osv-scanner
+git -C $SWORD_PATH config core.hooksPath githooks
+
 # options
 # todo need classified stuff?
 # sh -c '${SWORD_PATH}/bin/syncfromcoal'
@@ -38,7 +41,7 @@ elif [[ $os == "macos" ]]; then
     fi
 
     echo "brew installing stuff"
-    brew install zsh zsh-completions tmux nvim python3 fzf ripgrep gitleaks
+    brew install zsh zsh-completions tmux nvim python3 fzf ripgrep gitleaks osv-scanner
 fi
 
 # oh-my-zsh

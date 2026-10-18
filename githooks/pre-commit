@@ -1,0 +1,12 @@
+#!/bin/sh
+# Block commits that leak secrets or add known-vulnerable dependencies.
+# Enabled by install.sh via `git config core.hooksPath githooks`.
+set -e
+cd "$(git rev-parse --show-toplevel)"
+
+gitleaks git --pre-commit --staged -v --redact --no-banner --config .gitleaks.toml
+
+# osv-scanner queries osv.dev; only run when a dependency manifest is staged
+if git diff --cached --name-only | grep -qE '(requirements[^/]*\.txt|[^/]*lock[^/]*)$'; then
+  osv-scanner scan source -r --no-resolve .
+fi

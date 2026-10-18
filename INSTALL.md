@@ -134,3 +134,26 @@ push and PR via `.github/workflows/gitleaks.yml`. Locally:
 gitleaks git --config .gitleaks.toml     # full history
 gitleaks dir . --config .gitleaks.toml   # working tree
 ```
+
+## osv-scanner
+
+```
+brew install osv-scanner
+```
+
+Dependency vulnerability scanning (OSV database). CI runs it on every push, PR
+and weekly via `.github/workflows/osv-scanner.yml`; results land in
+Security > Code scanning. Locally:
+
+```
+osv-scanner scan source -r --no-resolve .
+```
+
+## pre-commit hook
+
+`githooks/pre-commit` runs gitleaks on staged changes, and osv-scanner when a
+dependency manifest is staged. `install.sh` enables it; manually:
+
+```
+git config core.hooksPath githooks
+```
