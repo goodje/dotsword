@@ -1,6 +1,6 @@
 SWORD_PATH=${HOME}/.sword
 
-source ${SWORD_PATH}/pre.sh
+SWORD_CUSTOM_PATH=${SWORD_PATH}/custom
 
 # -- PATH
 if [[ -d /snap/bin ]]; then
@@ -46,11 +46,11 @@ DISABLE_MAGIC_FUNCTIONS=true
 
 # custom rc
 if [[ -f ${SWORD_PATH}/shell.custom.rc ]]; then
-    source_include ${SWORD_PATH}/shell.custom.rc
+    source ${SWORD_PATH}/shell.custom.rc
 fi
 
 if [[ -f $SWORD_CUSTOM_PATH/classified.shell.rc ]]; then
-    source_include $SWORD_CUSTOM_PATH/classified.shell.rc
+    source $SWORD_CUSTOM_PATH/classified.shell.rc
 fi
 
 # set -o vi
