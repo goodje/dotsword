@@ -1,7 +1,8 @@
 #!/bin/bash
 
-USER_NAME="goodje"
-USER_EMAIL="1475199+goodje@users.noreply.github.com"
+# defaults to the existing global git identity; override with --name/--email
+USER_NAME="$(git config --global --includes user.name 2>/dev/null)"
+USER_EMAIL="$(git config --global --includes user.email 2>/dev/null)"
 GLOBAL=
 SETUP_HOOK=1
 
@@ -25,6 +26,11 @@ done
 
 # finish initiation
 
+if [[ -z "${USER_NAME}" || -z "${USER_EMAIL}" ]]; then
+    echo "usage: git_repo_start [-g|--global] --name=<name> --email=<email>"
+    echo "no git identity found; pass --name and --email"
+    exit 1
+fi
 
 git config ${GLOBAL} user.name "${USER_NAME}"
 git config ${GLOBAL} user.email "${USER_EMAIL}"
