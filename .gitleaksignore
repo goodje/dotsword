@@ -1,0 +1,6 @@
+# Reviewed false positives (gitleaks fingerprints)
+# pgcli stock config: commented ssh-tunnel example
+b36a37b343f8658844a96601e3691494d2c0335e:config/pgcli/config:email-address:200
+config/pgcli/config:email-address:200
+# 2018 placeholder email in git/gitconfig
+2ef46a33897e434ef8daefce2a3f9d9e41ac4b53:git/gitconfig:email-address:7

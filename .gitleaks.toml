@@ -14,3 +14,18 @@ paths = [
   '''vim/spell/.*''',
   '''^LICENSE$''',
 ]
+
+# Any real email address; personal/work emails get caught without naming them.
+# Personal-only rules go in custom/gitleaks.local.toml (gitignored).
+[[rules]]
+id = "email-address"
+description = "Email address"
+regex = '''[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}'''
+keywords = ["@"]
+[[rules.allowlists]]
+regexTarget = "match"
+regexes = [
+  '''@users\.noreply\.github\.com$''',
+  '''@example\.(com|org)$''',
+  '''^git@''',  # ssh remote user, e.g. git@github.com
+]
