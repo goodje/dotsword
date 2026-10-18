@@ -157,3 +157,17 @@ dependency manifest is staged. `install.sh` enables it; manually:
 ```
 git config core.hooksPath githooks
 ```
+
+## identity-guard (global commit hook)
+
+```
+brew install git   # needs Git >= 2.54; Apple's /usr/bin/git ignores config hooks
+```
+
+`git/gitconfig` defines a config-based `pre-commit` hook that runs in every
+repo (existing and fresh clones) before the repo's own hook. It refuses commits
+whose author or committer email isn't `*@users.noreply.github.com`. Skip once:
+
+```
+git -c hook.identity-guard.enabled=false commit ...
+```

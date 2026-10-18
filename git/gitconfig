@@ -34,3 +34,8 @@
 
 [init]
 	defaultBranch = master
+
+# Git >= 2.54: runs in every repo before its own pre-commit hook
+[hook "identity-guard"]
+    event = pre-commit
+    command = ~/.sword/git/hooks/identity-guard.sh

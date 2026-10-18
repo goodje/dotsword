@@ -41,7 +41,7 @@ elif [[ $os == "macos" ]]; then
     fi
 
     echo "brew installing stuff"
-    brew install zsh zsh-completions tmux nvim python3 fzf ripgrep gitleaks osv-scanner
+    brew install git zsh zsh-completions tmux nvim python3 fzf ripgrep gitleaks osv-scanner
 fi
 
 # oh-my-zsh
