@@ -6,15 +6,8 @@ SWORD_PATH=${HOME}/.sword
 SET_TIMEZONE=0
 TIMEZONE=${TIMEZONE:-UTC}   # e.g. Region/City
 
-git submodule init
-git submodule update
-
 # pre-commit: gitleaks + osv-scanner
 git -C $SWORD_PATH config core.hooksPath githooks
-
-# options
-# todo need classified stuff?
-# sh -c '${SWORD_PATH}/bin/syncfromcoal'
 
 # set timezone
 if [[ $ostype == "linux" && $SET_TIMEZONE ]]; then

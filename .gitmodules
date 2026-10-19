@@ -1,4 +1,0 @@
-
-[submodule "vendors/dotcoal"]
-	path = vendors/dotcoal
-	url = git@github.com:goodje/dotcoal.git
