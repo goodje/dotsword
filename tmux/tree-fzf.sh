@@ -1,7 +1,8 @@
 #!/bin/bash
 # Fuzzy-pick a tmux session/window/pane from a tree view (like `prefix s`),
 # then switch to it. Meant to run inside `tmux display-popup -E`.
-# Typing prunes the tree to matching rows plus their parents (parents dimmed).
+# Typing prunes the tree to matching rows plus their parents and children.
+# Only panes are selectable; session/window rows are dimmed and skipped.
 # Needs fzf >= 0.66 (--raw).
 
 # --list <rows-file> <query>: print the pruned, rendered tree for fzf's reload
@@ -14,10 +15,12 @@ if [ "$1" = --list ]; then
   fi
   [ -z "$matched" ] && exit
   printf '%s\n' "$matched" | awk -F'\t' '
-    # keep matched rows and their ancestors ("s:" for sessions, "s:w" for windows)
-    NR == FNR { keep[$1] = 1; split($1, a, "."); keep[a[1]] = 1
+    # keep matched rows, their ancestors ("s:" for sessions, "s:w" for windows)
+    # and their descendants, since only panes are selectable
+    NR == FNR { m[$1] = 1; keep[$1] = 1; split($1, a, "."); keep[a[1]] = 1
                 keep[substr($1, 1, index($1, ":"))] = 1; next }
-    keep[$1] { n++; t[n] = $1; lv[n] = $2; d[n] = $3 }
+    { split($1, a, ".") }
+    keep[$1] || m[a[1]] || m[substr($1, 1, index($1, ":"))] { n++; t[n] = $1; lv[n] = $2; d[n] = $3 }
     END {
       # render tree glyphs, computing last-sibling status on the pruned list
       for (r = 1; r <= n; r++) {
@@ -26,7 +29,9 @@ if [ "$1" = --list ]; then
         if (lv[r] == 0) g = ""
         else if (lv[r] == 1) { g = (last ? "└─ " : "├─ "); wlast = last }
         else g = (wlast ? "   " : "│  ") (last ? "└─ " : "├─ ")
-        printf "%s\t%s%s\n", t[r], g, d[r]
+        # prefix pane rows ("s:w.p") with a zero-width space: fzf is told to
+        # search for it, so only pane rows match and up/down skip the rest
+        printf "%s\t%s%s%s\n", t[r], (index(t[r], ".") ? "\342\200\213" : ""), g, d[r]
       }
     }' - "$rows"
   exit
@@ -66,9 +71,11 @@ tmux list-panes -a -F \
     }' > "$rows"
 
 self=$0
+zw=$'\342\200\213'  # zero-width space marking pane rows, see --list
 target=$("$self" --list "$rows" "" |
   fzf --ansi --raw --no-sort --reverse --no-hscroll --ellipsis '' --delimiter '\t' --with-nth 2.. \
-      --bind "change:reload-sync:\"$self\" --list \"$rows\" {q}" \
+      --bind "start:search($zw),result:best,up:up-match,down:down-match" \
+      --bind "change:reload-sync(\"$self\" --list \"$rows\" {q})+search($zw)" \
       --preview 'tmux capture-pane -ep -t {1}' --preview-window right,50% |
   cut -f1)
 
