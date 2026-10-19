@@ -1,0 +1,7 @@
+# Bump SHA-pinned GitHub Actions (keeps the "# vX.Y.Z" comments in sync)
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
