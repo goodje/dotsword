@@ -13,14 +13,14 @@ if [[ "$OSTYPE" == "linux-gnu"* ]]; then
 		os="ubuntu"
 	else
 		echo "Unsupported Linux distribution"
-		exit(1)
+		exit 1
 	  fi
 elif [[ "$OSTYPE" == "darwin"* ]]; then
 	ostype="macos"
 	os="macos"
 else
 	echo "Unsupported os"
-	exit(1)
+	exit 1
 fi
 
 # -- function
