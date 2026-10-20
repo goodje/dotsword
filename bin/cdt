@@ -1,0 +1,19 @@
+#!/bin/bash
+# chrome-devtools CLI bound to a rainbow Chrome (see chromeR..chromeV in shell.rc).
+# One daemon per Chrome, session ID = debugging port. Ensures the daemon is up and
+# attached to the right port before each call, so a dead daemon never falls back
+# to launching a default headless Chrome.
+# usage: cdt <R|O|Y|G|B|I|V> <command> [args...]   e.g. cdt R list_pages, cdt B stop
+case $1 in
+    R) port=9223 ;; O) port=9224 ;; Y) port=9225 ;; G) port=9226 ;;
+    B) port=9227 ;; I) port=9228 ;; V) port=9229 ;;
+    *) echo "usage: cdt <R|O|Y|G|B|I|V> <command> [args...]" >&2; exit 2 ;;
+esac
+shift
+export CHROME_DEVTOOLS_MCP_NO_USAGE_STATISTICS=1 CHROME_DEVTOOLS_MCP_NO_UPDATE_CHECKS=1
+cd=(chrome-devtools --sessionId "$port")
+[[ $1 == stop ]] && exec "${cd[@]}" stop
+"${cd[@]}" status 2>/dev/null | grep -q "browser-url=http://127.0.0.1:$port\"" ||
+    "${cd[@]}" start --browserUrl "http://127.0.0.1:$port" --usageStatistics=false >/dev/null 2>&1 ||
+    { echo "cdt: failed to start daemon for port $port" >&2; exit 1; }
+exec "${cd[@]}" "$@"
