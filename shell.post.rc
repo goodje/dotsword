@@ -7,7 +7,3 @@ unsetopt share_history
 HISTFILE=~/.zsh_history
 HISTSIZE=999999999
 SAVEHIST=$HISTSIZE
-
-# tmuxinator
-export EDITOR=vim
-source $SWORD_PATH/tmuxinator-completion
