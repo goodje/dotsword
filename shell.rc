@@ -28,6 +28,28 @@ alias kgd='kubectl get deployments'
 alias kd='kubectl describe'
 alias kl='kubectl logs'
 
+# -- rainbow Chrome (macOS, Chrome installed)
+if [[ -d "/Applications/Google Chrome.app" ]]; then
+    # Rainbow Chrome instances (ROYGBIV -> ports 9223-9229). R,O,Y,G windowed; B,I,V headless.
+    alias chromeR='open -na "Google Chrome" --args --remote-debugging-port=9223 --user-data-dir="$HOME/.chrome-profile-9223"'
+    alias chromeO='open -na "Google Chrome" --args --remote-debugging-port=9224 --user-data-dir="$HOME/.chrome-profile-9224"'
+    alias chromeY='open -na "Google Chrome" --args --remote-debugging-port=9225 --user-data-dir="$HOME/.chrome-profile-9225"'
+    alias chromeG='open -na "Google Chrome" --args --remote-debugging-port=9226 --user-data-dir="$HOME/.chrome-profile-9226"'
+    alias chromeB='"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --remote-debugging-port=9227 --user-data-dir="$HOME/.chrome-profile-9227" &>/dev/null &'
+    alias chromeI='"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --remote-debugging-port=9228 --user-data-dir="$HOME/.chrome-profile-9228" &>/dev/null &'
+    alias chromeV='"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --remote-debugging-port=9229 --user-data-dir="$HOME/.chrome-profile-9229" &>/dev/null &'
+    # Kill a single rainbow Chrome instance
+    alias kill-chromeR='pids=$(lsof -nP -iTCP:9223 -sTCP:LISTEN -t 2>/dev/null); [ -n "$pids" ] && kill $pids'
+    alias kill-chromeO='pids=$(lsof -nP -iTCP:9224 -sTCP:LISTEN -t 2>/dev/null); [ -n "$pids" ] && kill $pids'
+    alias kill-chromeY='pids=$(lsof -nP -iTCP:9225 -sTCP:LISTEN -t 2>/dev/null); [ -n "$pids" ] && kill $pids'
+    alias kill-chromeG='pids=$(lsof -nP -iTCP:9226 -sTCP:LISTEN -t 2>/dev/null); [ -n "$pids" ] && kill $pids'
+    alias kill-chromeB='pids=$(lsof -nP -iTCP:9227 -sTCP:LISTEN -t 2>/dev/null); [ -n "$pids" ] && kill $pids'
+    alias kill-chromeI='pids=$(lsof -nP -iTCP:9228 -sTCP:LISTEN -t 2>/dev/null); [ -n "$pids" ] && kill $pids'
+    alias kill-chromeV='pids=$(lsof -nP -iTCP:9229 -sTCP:LISTEN -t 2>/dev/null); [ -n "$pids" ] && kill $pids'
+    # Kill all rainbow Chrome instances (ports 9223-9229)
+    alias kill-chromeAll='for p in 9223 9224 9225 9226 9227 9228 9229; do pids=$(lsof -nP -iTCP:$p -sTCP:LISTEN -t 2>/dev/null); [ -n "$pids" ] && kill $pids; done'
+fi
+
 # -- encoding
 # export LC_ALL=en_US.UTF-8
 export CLICOLOR=1 #terminal color
